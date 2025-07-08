@@ -1,85 +1,472 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(135deg, #140c1b, #130a1a);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Arial', sans-serif;
-            color: #e6d7ff;
-        }
-
-        .container {
-            text-align: center;
-            max-width: 600px;
-            padding: 2rem;
-        }
-
-        .gif-container {
-            margin-bottom: 2rem;
-        }
-
-        .gif-container img {
-            width: auto;
-            height: 150px;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(139, 69, 177, 0.3);
-        }
-
-        .main-text {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #c49be9;
-            text-shadow: 0 4px 15px rgba(139, 69, 177, 0.5);
-            margin-bottom: 1rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .sub-text {
-            font-size: 1.2rem;
-            color: #a084c7;
-            font-style: italic;
-            opacity: 0.8;
-            letter-spacing: 1px;
-        }
-
-        @media (max-width: 768px) {
-            .main-text {
-                font-size: 2rem;
-            }
-            
-            .sub-text {
-                font-size: 1rem;
-            }
-            
-            .gif-container img {
-                width: auto;
-                height: 120px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="gif-container">
-            <img src="https://media1.tenor.com/m/Xehj8EoUtxoAAAAC/kermit-the-frog-kermit-typing.gif" alt="Work in Progress Animation">
-        </div>
-        <h1 class="main-text">Work in Progress</h1>
-        <p class="sub-text">Não tem nada pra ver aqui, vá embora</p>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vitor Barbosa Portfolio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style></style>
+  </head>
+  <body>
+    <!-- Animated Background -->
+    <div class="animated-background">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
     </div>
-</body>
+
+    <header id="header">
+      <div class="container">
+        <nav>
+          <a href="#" class="logo"
+            ><span class="logo-first">Vitor</span>
+            <span class="logo-middle">F.</span>
+            <span class="logo-second">Barbosa</span></a
+          >
+          <div class="nav-links">
+            <a href="#skills" class="nav-link">SKILLS</a>
+            <a href="#projects" class="nav-link">PROJECTS</a>
+            <a href="#experience" class="nav-link">EXPERIENCE</a>
+            <a href="#contact" class="nav-link">CONTACT</a>
+          </div>
+          <div class="menu-toggle">☰</div>
+        </nav>
+      </div>
+    </header>
+
+    <section id="skills">
+      <div class="container">
+        <div class="intro-skills">
+          <div class="intro">
+            <div class="intro-content">
+              <img
+                src="images/profilepic.png"
+                alt="Profile Image"
+                class="profile-image"
+              />
+              <div class="intro-text">
+                <h1>Hello, I'm Vitor</h1>
+                <p>
+                  A Brazilian game developer with 5+ years of working in the industry for different studios
+                  developing passionate indie games for various platforms including Android/iOS, Windows and Xbox.<br><br>
+                  I hold a Bachelor's Degree in Game Design and I'm always studying on my own while I code my personal projects.<br><br>
+                  I'm also a certified nerd who owns a board game collection, visits anime conventions every year and has performed a few acting gigs on stage.
+                  <br><span class="highlighted-text"><b>Scroll down to see some cool projects!</b></span>
+                </p>
+                <a
+                  href="#"
+                  class="resume-btn"
+                  onclick="alert('Sorry! I havent finished it yet')"
+                  ><img src="images/icons/resume1.png" alt="resume icon"> <b>RESUME</b></a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="skills">
+            <h2>SKILLS</h2>
+
+            <div class="skill-category">
+              <h3>Languages</h3>
+              <div class="skill-list">
+                <span class="skill-item">C#</span>
+                <span class="skill-item">GDScript</span>
+                <span class="skill-item">Lua</span>
+                <span class="skill-item">Haxe</span>
+                <span class="skill-item">Python</span>
+                <span class="skill-item">HTML</span>
+                <span class="skill-item">CSS</span>
+              </div>
+            </div>
+
+            <div class="skill-category">
+              <h3>Engines</h3>
+              <div class="skill-list">
+                <span class="skill-item">Unity</span>
+                <span class="skill-item">Godot</span>
+                <span class="skill-item">Construct 3</span>
+                <span class="skill-item">RPG Maker</span>
+              </div>
+            </div>
+
+            <div class="skill-category">
+              <h3>Tools</h3>
+              <div class="skill-list">
+                <span class="skill-item">Git</span>
+                <span class="skill-item">Adobe Photoshop</span>
+                <span class="skill-item">Aseprite</span>
+                <span class="skill-item">Trello</span>
+                <span class="skill-item">CapCut</span>
+                <span class="skill-item">Adobe Premiere</span>
+              </div>
+            </div>
+
+            <div class="skill-category">
+              <h3>Soft Skills</h3>
+              <div class="skill-list">
+                <span class="skill-item">Team Leadership</span>
+                <span class="skill-item">Communication</span>
+                <span class="skill-item">Time Management</span>
+                <span class="skill-item">Problem Solving</span>
+              </div>
+            </div>
+
+            <div class="skill-category">
+              <h3>Interests</h3>
+              <div class="skill-list">
+                <span class="skill-item">Video Games</span>
+                <span class="skill-item">TableTop RPGs</span>
+                <span class="skill-item">Board Games</span>
+                <span class="skill-item">Anime</span>
+                <span class="skill-item">Theatre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="container">
+        <h2>PROJECTS</h2>
+
+        <div class="projects-grid">
+          <!-- Project 1 -->
+          <div class="project-card">
+            <img
+              src="images/projects/gif_masterLemon.gif"
+              alt="Project 1"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Master Lemon</h3>
+                <a href="https://store.steampowered.com/app/3070390/Master_Lemon_The_Quest_for_Iceland/" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">PC</span>
+                <span class="project-tag">Xbox</span>
+                <span class="project-tag">Nintendo Switch</span>
+                <span class="project-tag">PS5</span>
+                <span class="project-tag">Steam</span>
+                <span class="project-tag">2025</span>
+              </div>
+              <p>
+                I worked as Technical Lead for the engineering team on this narrative adventure game inspired by a true story.
+                Players learn words from various languages which they can use as game mechanics to craft items, teleport, move objects and more.
+                <span class="highlighted-text"><b>Winner of <i>Games For Change América Latina Award</i> in 2022.</b></span>
+              </p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img
+              src="images/projects/gif_2048bosses.gif"
+              alt="Project 2"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>2048 Bosses</h3>
+                <a href="#" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">PC</span>
+                <span class="project-tag">Steam</span>
+                <span class="project-tag">2025</span>
+              </div>
+              <p>
+                A puzzle roguelike game that uses your 2048 score to deliver
+                powerful attacks while letting the Player choose a Character and
+                learn skills which will help you navigate the danger and create interesting synergies.
+                This is a solo project and I'm currently setting up the Steam page.
+              </p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img
+              src="images/projects/gif_idleStarZoo.gif"
+              alt="Project 3"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Idle Star Zoo: Animals Tycoon</h3>
+                <a href="https://play.google.com/store/apps/details?id=com.dod.starzoo" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">Android</span>
+                <span class="project-tag">iOS</span>
+                <span class="project-tag">Free</span>
+                <span class="project-tag">2021</span>
+              </div>
+              <p>
+                A mobile idle game about managing an alien zoo, rescuing animals and taking care of their habitats.
+                The game also features many minigames and seasonal content. I developed new features such as breeding and hundreds of bugfixes.
+              </p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img
+              src="images/projects/gif_cardBattleKingdom.gif"
+              alt="Project 4"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Card Battle Kingdom</h3>
+                <a href="https://play.google.com/store/apps/details?id=com.dod.cbk&hl=pt" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">Android</span>
+                <span class="project-tag">iOS</span>
+                <span class="project-tag">Free</span>
+                <span class="project-tag">2023</span>
+              </div>
+              <p>
+                A pvp real time card battling game. I was tasked with changing core game mechanics,
+                such as removing the fixed team composition in order to turn the characters into playable cards during battle.
+                I spent a few months implementing changes for a second launch of the game.
+              </p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img
+              src="images/projects/gif_migus.gif"
+              alt="Project 5"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Migus</h3>
+                <a href="https://suraimustudios.itch.io/migus" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">WebGL</span>
+                <span class="project-tag">Free</span>
+                <span class="project-tag">2020</span>
+              </div>
+              <p>
+                <span class="highlighted-text"><b>Awarded first place winner</b></span> on a national game jam
+                happening over one weekend, so in 48 hours we came up with and idea and developed a functional game.
+                Manage resources from 4 districts with different roles in order to upgrade and defend your fortress.
+              </p>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img
+              src="images/projects/gif_fireSurvivors.gif"
+              alt="Project 6"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Fire Survivors</h3>
+                <a href="https://play.google.com/store/apps/details?id=com.dod.firesurvivors&hl=pt" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">Android</span>
+                <span class="project-tag">Free</span>
+                <span class="project-tag">2022</span>
+              </div>
+              <p>
+                A hypercasual game in the "Survivors" genre. You're a firefigther extinguishing hordes of flaming
+                enemies and levelling up. Each level grants you 3 options of power ups for your character.
+              </p>
+            </div>
+          </div>
+          <div class="project-card">
+            <img
+              src="images/projects/gif_runniets.gif"
+              alt="Project 7"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Runniets</h3>
+                <a href="https://www.newgrounds.com/portal/view/750907" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">Unity</span>
+                <span class="project-tag">WebGL</span>
+                <span class="project-tag">Free</span>
+                <span class="project-tag">2018</span>
+              </div>
+              <p>
+                A game we made for college in under a month. The game is a satire of Philip K. Dick's book <i>Second Variety</i>.
+                You are a soviet super soldier tasked with investigating the reign of American machines. The game is available for free on Newgrounds.
+              </p>
+            </div>
+          </div>
+          <div class="project-card">
+            <img
+              src="images/projects/gif_pastPersistence.gif"
+              alt="Project 8"
+              class="project-image"
+            />
+            <div class="project-info">
+              <div class="project-title">
+                <h3>Past Persistence</h3>
+                <a href="https://www.newgrounds.com/portal/view/753652" target="_blank" rel="noopener noreferrer" class="project-link"><img src="images/icons/external-link1.png" alt="external link"></a>
+              </div>
+              <div class="project-tags">
+                <span class="project-tag">HaxeFlixel</span>
+                <span class="project-tag">WebGL</span>
+                <span class="project-tag">Free</span>
+                <span class="project-tag">2020</span>
+              </div>
+              <p>
+                <span class="highlighted-text"><b>Awarded second place winner</b></span> in a Newgrounds game jam.
+                Over two weeks I learned how to code in the Haxe language and developed a fun and simple game
+                where each death spawns a permanent ghost version of you, but dying too much increases the Curse which can consume you forever.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="container">
+        <h2>EXPERIENCE</h2>
+
+        <div class="experience-timeline">
+          <div class="experience-card">
+            <h3>Technical Lead Developer at Pepita Digital</h3>
+            <div class="experience-date">September 2022 - July 2025</div>
+            <p>
+              Developed core gameplay systems and flexible user interfaces, implemented tools to assist game designers, oversaw bugfixing and feature development from other
+              engineers, assisted with Xbox porting and together we were able to deliver a full game cleared for release.
+            </p>
+          </div>
+
+          <div class="experience-card">
+            <h3>Intermediate Developer at Dreams on Demand</h3>
+            <div class="experience-date">January 2021 - March 2023</div>
+            <p>
+              Developed new features for the studio's ongoing live service mobile games, fixed bugs on a daily basis and developed
+              hypercasual games that would take around 2 months to complete. I also developed tools to assist in marketing material.
+            </p>
+          </div>
+
+          <div class="experience-card">
+            <h3>Community Manager at NeoBricks GMBH</h3>
+            <div class="experience-date">June 2019 - August 2020</div>
+            <p>
+              Community Management for Mobile and PC games (providing customer support and handling events online and/or ingame).
+              Created promotional content and handled events and moderation.
+              Game content translation from EN to PT-BR.
+            </p>
+          </div>
+
+          <div class="education-label">EDUCATION</div>
+
+          <div class="experience-card">
+            <h3>Bachelor of Game Design at Universidade Anhembi Morumbi (UAM)</h3>
+            <div class="experience-date">January 2017 - December 2020</div>
+            <p>
+              Graduated from University while specializing myself in game programming. Collaborated with several other students to make
+              different games every semester, managing scope and working efficiently to deliver polished games in a timely manner.
+            </p>
+          </div>
+          <div class="experience-card">
+            <h3>Associate's Degree in Computer Science at ETEC Elias Nechar</h3>
+            <div class="experience-date">January 2015 - December 2016</div>
+            <p>
+              Learned about traditional Software Development using C# and SQL to manage user data.
+              Got introduced to Object Oriented Programming and the Unified Modeling Language.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <h2>CONTACT</h2>
+
+        <div class="contact-container">
+          <div class="contact-info">
+            <h3>Thank You for Visiting!</h3>
+            <p>
+              If you are a recruiter or just a fellow gamer or developer who wants to chat,
+              feel free to reach me through the following form or the social media links below.
+              I'm always on the lookout for great oportunities and new friends.
+            </p>
+
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/gmbitor/" target="_blank" rel="noopener noreferrer" class="social-btn"><img src="images/icons/linkedin3.png" alt="linkedIn-button"></a>
+              <a href="https://www.instagram.com/bitorvarbosa/" target="_blank" rel="noopener noreferrer" class="social-btn"><img src="images/icons/insta1.png" alt="instagram-button"></a>
+              <a href="https://steamcommunity.com/id/BitorVarbosa/" target="_blank" rel="noopener noreferrer" class="social-btn"><img src="images/icons/steam1.png" alt="steam-button"></a>
+              <a href="https://www.youtube.com/@GozmaDev" target="_blank" rel="noopener noreferrer" class="social-btn"><img src="images/icons/youtube3.png" alt="youtube-button"></a>
+            </div>
+
+            <img
+              src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXhneTM3M2pkMWc1eXdkZWhyOXVzNW02Z3FtZXJhN2o0YmR0N3AzayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YQitE4YNQNahy/giphy.gif"
+              alt="Game Dev Fun"
+              class="fun-gif"
+            />
+          </div>
+
+          <div class="contact-form">
+            <form action="https://formsubmit.co/vitorfbarbosa174@gmail.com" method="POST">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your beautiful name here" required />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your email address" required />
+              </div>
+
+              <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="_subject" placeholder="I'm praying it's a job offer" required />
+              </div>
+
+              <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="I'm all ears" required></textarea>
+              </div>
+
+              <button type="submit">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 - Vitor Fanhani Barbosa</p>
+        <p>
+          Email:
+          <a href="mailto:vitorfbarbosa174@gmail.com"
+            >vitorfbarbosa174@gmail.com</a
+          >
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>
