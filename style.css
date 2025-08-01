@@ -619,6 +619,7 @@ nav {
   border-radius: 10px;
 }
 
+/* No longer in use */
 .contact-form {
   flex: 1;
   min-width: 300px;
