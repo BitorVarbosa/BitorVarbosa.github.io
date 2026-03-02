@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C# Naming Conventions Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e12;
+    --surface: #16161d;
+    --surface-2: #1e1e28;
+    --border: #2a2a38;
+    --text: #e2e2ea;
+    --text-dim: #8888a0;
+    --accent: #68d391;
+    --accent-dim: #68d39130;
+    --pascal: #63b3ed;
+    --camel: #f6ad55;
+    --prefix: #fc8181;
+    --purple: #b794f4;
+    --code-bg: #12121a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    padding: 2rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+  }
+
+  header h1 span { color: var(--accent); }
+
+  header p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  header a {
+    color: var(--pascal);
+    text-decoration: none;
+    font-size: 0.8rem;
+  }
+
+  @keyframes backLinkColorCycle {
+    0%, 100% { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+    25%       { color: #8be9fd; text-shadow: 0 0 8px #8be9fdaa, 0 0 18px #8be9fd55; }
+    50%       { color: #bd93f9; text-shadow: 0 0 8px #bd93f9aa, 0 0 18px #bd93f955; }
+    75%       { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    animation: backLinkColorCycle 4s ease-in-out infinite;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .section {
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 0.8rem;
+    padding-left: 0.2rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr {
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover {
+    background: var(--surface-2);
+  }
+
+  .identifier {
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-pascal {
+    background: #63b3ed20;
+    color: var(--pascal);
+    border: 1px solid #63b3ed40;
+  }
+
+  .tag-camel {
+    background: #f6ad5520;
+    color: var(--camel);
+    border: 1px solid #f6ad5540;
+  }
+
+  .tag-prefix {
+    background: #fc818120;
+    color: var(--prefix);
+    border: 1px solid #fc818140;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .tip-card .tip-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .tip-card strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .example-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text-dim);
+  }
+
+  .example-block .kw { color: var(--pascal); }
+  .example-block .tp { color: var(--accent); }
+  .example-block .cm { color: #555570; font-style: italic; }
+  .example-block .st { color: var(--camel); }
+  .example-block .pr { color: var(--prefix); }
+  .example-block .pu { color: var(--purple); }
+
+  .generics-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .generics-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .generics-section li {
+    padding: 0.35rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .generics-section li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1.2rem 1rem; }
+    header h1 { font-size: 1.5rem; }
+    table { font-size: 0.82rem; }
+    thead th, tbody td { padding: 0.5rem 0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="tools.html" class="back-link">← Back to Tools</a>
+  <h1>C<span>#</span> Naming Conventions</h1>
+  <p>Microsoft's official identifier naming rules &amp; conventions</p>
+  <a href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names">learn.microsoft.com ↗</a>
+</header>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--pascal)"></span> PascalCase</span>
+  <span><span class="dot" style="background:var(--camel)"></span> camelCase</span>
+  <span><span class="dot" style="background:var(--prefix)"></span> Prefix rules</span>
+</div>
+
+<!-- MAIN TABLE -->
+<div class="section">
+  <div class="section-title">Naming Rules by Identifier</div>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Identifier</th>
+          <th>Convention</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="identifier">Class</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>DataService</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Interface</td>
+          <td><span class="tag tag-prefix">I prefix</span> + <span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>IWorkerQueue</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Struct</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>ValueCoordinate</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Delegate</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>DelegateType</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Enum</td>
+          <td><span class="tag tag-pascal">PascalCase</span> — singular (non-flags), plural (flags)</td>
+          <td><code>Color</code> / <code>FilePermissions</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Record</td>
+          <td><span class="tag tag-pascal">PascalCase</span> (params too)</td>
+          <td><code>PhysicalAddress(string Street, ...)</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Namespace</td>
+          <td><span class="tag tag-pascal">PascalCase</span> — reverse domain notation</td>
+          <td><code>Company.Product.Module</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Public Method</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>StartEventProcessing()</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Local Function</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>CountQueueItems()</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Public Property</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>WorkerQueue</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Public Field</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>IsValid</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Public Event</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>EventProcessing</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Constant</td>
+          <td><span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>MaxRetryCount</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Method Parameter</td>
+          <td><span class="tag tag-camel">camelCase</span></td>
+          <td><code>someNumber</code>, <code>isValid</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Local Variable</td>
+          <td><span class="tag tag-camel">camelCase</span></td>
+          <td><code>workerCount</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Private Field</td>
+          <td><span class="tag tag-prefix">_ prefix</span> + <span class="tag tag-camel">camelCase</span></td>
+          <td><code>_workerQueue</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Private Static Field</td>
+          <td><span class="tag tag-prefix">s_ prefix</span> + <span class="tag tag-camel">camelCase</span></td>
+          <td><code>s_workerQueue</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Thread Static Field</td>
+          <td><span class="tag tag-prefix">t_ prefix</span> + <span class="tag tag-camel">camelCase</span></td>
+          <td><code>t_timeSpan</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Attribute Type</td>
+          <td><span class="tag tag-pascal">PascalCase</span> + <span class="tag tag-prefix">Attribute suffix</span></td>
+          <td><code>ObsoleteAttribute</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">Generic Type Param</td>
+          <td><span class="tag tag-prefix">T prefix</span> + <span class="tag tag-pascal">PascalCase</span></td>
+          <td><code>TSession</code>, <code>TOutput</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PRIMARY CONSTRUCTOR -->
+<div class="section">
+  <div class="section-title">Primary Constructor Parameters</div>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Convention</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="identifier">class / struct</td>
+          <td><span class="tag tag-camel">camelCase</span> — same as regular parameters</td>
+          <td><code>DataService(IWorkerQueue workerQueue)</code></td>
+        </tr>
+        <tr>
+          <td class="identifier">record</td>
+          <td><span class="tag tag-pascal">PascalCase</span> — they become public properties</td>
+          <td><code>Person(string FirstName, string LastName)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- GENERICS -->
+<div class="section">
+  <div class="section-title">Generic Type Parameter Guidelines</div>
+  <div class="generics-section">
+    <ul>
+      <li>Use descriptive names — prefix with <code>T</code> (e.g., <code>TSession</code>, <code>TInput</code>)</li>
+      <li>Use single <code>T</code> only when the meaning is obvious: <code>List&lt;T&gt;</code>, <code>Predicate&lt;T&gt;</code></li>
+      <li>Consider reflecting constraints in the name: <code>TSession</code> for an <code>ISession</code> constraint</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ALL-IN-ONE EXAMPLE -->
+<div class="section">
+  <div class="section-title">All-in-one Example</div>
+  <div class="example-block"><span class="kw">namespace</span> <span class="tp">Company.Product.Module</span>
+{
+    <span class="kw">public interface</span> <span class="tp">IWorkerQueue</span> <span class="cm">// I + PascalCase</span>
+    {
+        <span class="kw">int</span> Count { <span class="kw">get</span>; }
+    }
+
+    <span class="kw">public record</span> <span class="tp">PhysicalAddress</span>(     <span class="cm">// PascalCase params (record)</span>
+        <span class="kw">string</span> <span class="pu">Street</span>,
+        <span class="kw">string</span> <span class="pu">City</span>,
+        <span class="kw">string</span> <span class="pu">ZipCode</span>);
+
+    <span class="kw">public class</span> <span class="tp">DataService</span> : <span class="tp">IWorkerQueue</span>  <span class="cm">// PascalCase</span>
+    {
+        <span class="kw">private</span> IWorkerQueue <span class="pr">_workerQueue</span>;       <span class="cm">// _ + camelCase</span>
+        <span class="kw">private static</span> ILogger <span class="pr">s_logger</span>;        <span class="cm">// s_ + camelCase</span>
+        [ThreadStatic]
+        <span class="kw">private static</span> TimeSpan <span class="pr">t_elapsed</span>;    <span class="cm">// t_ + camelCase</span>
+
+        <span class="kw">public bool</span> <span class="tp">IsValid</span>;                     <span class="cm">// PascalCase (public field)</span>
+        <span class="kw">public const int</span> <span class="tp">MaxRetryCount</span> = 3;     <span class="cm">// PascalCase (constant)</span>
+        <span class="kw">public event</span> Action <span class="tp">EventProcessing</span>;    <span class="cm">// PascalCase (event)</span>
+
+        <span class="kw">public void</span> <span class="tp">StartProcessing</span>(<span class="kw">int</span> <span class="st">retryCount</span>, <span class="kw">bool</span> <span class="st">isAsync</span>)  <span class="cm">// camelCase params</span>
+        {
+            <span class="kw">var</span> <span class="st">itemCount</span> = 0;                   <span class="cm">// camelCase (local var)</span>
+
+            <span class="kw">static int</span> <span class="tp">CountItems</span>() => 0;        <span class="cm">// PascalCase (local function)</span>
+        }
+    }
+
+    <span class="kw">public interface</span> <span class="tp">ISessionChannel</span>&lt;<span class="pu">TSession</span>&gt;  <span class="cm">// T + descriptive name</span>
+    {
+        <span class="pu">TSession</span> Session { <span class="kw">get</span>; }
+    }
+}</div>
+</div>
+
+<!-- TIPS -->
+<div class="section">
+  <div class="section-title">General Guidelines</div>
+  <div class="tips">
+    <div class="tip-card">
+      <span class="tip-icon">✦</span>
+      <strong>Clarity over brevity.</strong> Prefer descriptive names like <code>customerCount</code> over <code>cc</code>. Single-letter names only for simple loop counters.
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">⚠</span>
+      <strong>No double underscores.</strong> Names with <code>__</code> are reserved for compiler-generated identifiers.
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">✦</span>
+      <strong>Avoid abbreviations</strong> unless widely recognized (e.g., <code>Id</code>, <code>Html</code>, <code>Url</code> are fine).
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">✦</span>
+      <strong>Enum naming:</strong> singular noun for non-flags (<code>Color</code>), plural noun for <code>[Flags]</code> enums (<code>FilePermissions</code>).
+    </div>
+  </div>
+</div>
+
+<footer>
+  Based on Microsoft's official C# identifier naming rules and conventions &middot; 2025
+</footer>
+
+</body>
+</html>
