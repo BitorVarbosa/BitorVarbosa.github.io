@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLID Principles for Unity</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e12;
+    --surface: #16161d;
+    --surface-2: #1e1e28;
+    --border: #2a2a38;
+    --text: #e2e2ea;
+    --text-dim: #8888a0;
+    --accent: #68d391;
+    --accent-dim: #68d39130;
+    --pascal: #63b3ed;
+    --camel: #f6ad55;
+    --prefix: #fc8181;
+    --purple: #b794f4;
+    --code-bg: #12121a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    padding: 2rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @keyframes backLinkColorCycle {
+    0%, 100% { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+    25%       { color: #8be9fd; text-shadow: 0 0 8px #8be9fdaa, 0 0 18px #8be9fd55; }
+    50%       { color: #bd93f9; text-shadow: 0 0 8px #bd93f9aa, 0 0 18px #bd93f955; }
+    75%       { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    animation: backLinkColorCycle 4s ease-in-out infinite;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+  }
+
+  header h1 .s { color: var(--pascal); }
+  header h1 .o { color: var(--accent); }
+  header h1 .l { color: var(--camel); }
+  header h1 .i { color: var(--purple); }
+  header h1 .d { color: var(--prefix); }
+
+  header p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  .legend {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .principle {
+    margin-bottom: 2.2rem;
+  }
+
+  .principle-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .principle-letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .principle-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .principle-subtitle {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+
+  .principle-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+    padding-left: 0.2rem;
+    line-height: 1.65;
+  }
+
+  .principle-desc strong {
+    font-weight: 600;
+  }
+
+  .example-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text-dim);
+  }
+
+  .example-block .kw { color: var(--pascal); }
+  .example-block .tp { color: var(--accent); }
+  .example-block .cm { color: #555570; font-style: italic; }
+  .example-block .st { color: var(--camel); }
+  .example-block .pr { color: var(--prefix); }
+  .example-block .pu { color: var(--purple); }
+
+  .example-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 0.4rem;
+    padding-left: 0.2rem;
+  }
+
+  /* Per-principle colors */
+  .p-s .principle-letter { background: #63b3ed20; color: var(--pascal); border: 1px solid #63b3ed40; }
+  .p-s .principle-title { color: var(--pascal); }
+  .p-s strong { color: var(--pascal); }
+
+  .p-o .principle-letter { background: #68d39120; color: var(--accent); border: 1px solid #68d39140; }
+  .p-o .principle-title { color: var(--accent); }
+  .p-o strong { color: var(--accent); }
+
+  .p-l .principle-letter { background: #f6ad5520; color: var(--camel); border: 1px solid #f6ad5540; }
+  .p-l .principle-title { color: var(--camel); }
+  .p-l strong { color: var(--camel); }
+
+  .p-i .principle-letter { background: #b794f420; color: var(--purple); border: 1px solid #b794f440; }
+  .p-i .principle-title { color: var(--purple); }
+  .p-i strong { color: var(--purple); }
+
+  .p-d .principle-letter { background: #fc818120; color: var(--prefix); border: 1px solid #fc818140; }
+  .p-d .principle-title { color: var(--prefix); }
+  .p-d strong { color: var(--prefix); }
+
+  .bad-good {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .bad-label, .good-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.4rem;
+    padding-left: 0.2rem;
+  }
+
+  .bad-label { color: var(--prefix); }
+  .good-label { color: var(--accent); }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    margin-top: 2rem;
+  }
+
+  .tip-card .tip-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .tip-card strong { color: var(--accent); font-weight: 600; }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1.2rem 1rem; }
+    header h1 { font-size: 1.5rem; }
+    .bad-good { grid-template-columns: 1fr; }
+    .example-block { font-size: 0.72rem; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="tools.html" class="back-link">← Back to Tools</a>
+  <h1><span class="s">S</span><span class="o">O</span><span class="l">L</span><span class="i">I</span><span class="d">D</span> Principles</h1>
+  <p>A beginner-friendly guide for Unity developers using C#</p>
+</header>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--pascal)"></span> Single Responsibility</span>
+  <span><span class="dot" style="background:var(--accent)"></span> Open-Closed</span>
+  <span><span class="dot" style="background:var(--camel)"></span> Liskov Substitution</span>
+  <span><span class="dot" style="background:var(--purple)"></span> Interface Segregation</span>
+  <span><span class="dot" style="background:var(--prefix)"></span> Dependency Inversion</span>
+</div>
+
+<!-- S — Single Responsibility -->
+<div class="principle p-s">
+  <div class="principle-header">
+    <div class="principle-letter">S</div>
+    <div>
+      <div class="principle-title">Single Responsibility Principle</div>
+      <div class="principle-subtitle">A class should only do one thing</div>
+    </div>
+  </div>
+  <p class="principle-desc">
+    Each class should have <strong>one job</strong>. If you need to change how an entity moves <em>and</em> how health works, those should be separate scripts — not crammed into a single MonoBehaviour.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="bad-label">✗ Doing too much</div>
+      <div class="example-block"><span class="kw">public class</span> <span class="tp">Entity</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="cm">// Movement, health, inventory,</span>
+    <span class="cm">// audio, UI... all in one class!</span>
+    <span class="kw">void</span> <span class="tp">Move</span>() { ... }
+    <span class="kw">void</span> <span class="tp">TakeDamage</span>() { ... }
+    <span class="kw">void</span> <span class="tp">UpdateUI</span>() { ... }
+    <span class="kw">void</span> <span class="tp">PlaySound</span>() { ... }
+}</div>
+    </div>
+    <div>
+      <div class="good-label">✓ One job per class</div>
+      <div class="example-block"><span class="kw">public class</span> <span class="tp">EntityMovement</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="kw">void</span> <span class="tp">Move</span>() { ... }
+}
+
+<span class="kw">public class</span> <span class="tp">EntityHealth</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="kw">void</span> <span class="tp">TakeDamage</span>() { ... }
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- O — Open-Closed -->
+<div class="principle p-o">
+  <div class="principle-header">
+    <div class="principle-letter">O</div>
+    <div>
+      <div class="principle-title">Open-Closed Principle</div>
+      <div class="principle-subtitle">Extend it, don't change it</div>
+    </div>
+  </div>
+  <p class="principle-desc">
+    Once a class is written and tested, you <strong>shouldn't need to edit it</strong> to add new behavior. Instead, design it so new features can be added by creating new classes. This way, you never risk breaking something that already works.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="bad-label">✗ Editing old code for each new type</div>
+      <div class="example-block"><span class="kw">public class</span> <span class="tp">Weapon</span>
+{
+    <span class="kw">public void</span> <span class="tp">Attack</span>(<span class="kw">string</span> <span class="st">type</span>)
+    {
+        <span class="cm">// Every new weapon = edit this</span>
+        <span class="kw">if</span> (<span class="st">type</span> == <span class="st">"Sword"</span>) { ... }
+        <span class="kw">else if</span> (<span class="st">type</span> == <span class="st">"Bow"</span>) { ... }
+        <span class="kw">else if</span> (<span class="st">type</span> == <span class="st">"Staff"</span>) { ... }
+    }
+}</div>
+    </div>
+    <div>
+      <div class="good-label">✓ New weapons without touching old code</div>
+      <div class="example-block"><span class="kw">public abstract class</span> <span class="tp">Weapon</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="kw">public abstract void</span> <span class="tp">Attack</span>();
+}
+
+<span class="kw">public class</span> <span class="tp">Sword</span> : <span class="tp">Weapon</span>
+{
+    <span class="kw">public override void</span> <span class="tp">Attack</span>()
+    {
+        <span class="cm">// Sword-specific logic</span>
+    }
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- L — Liskov Substitution -->
+<div class="principle p-l">
+  <div class="principle-header">
+    <div class="principle-letter">L</div>
+    <div>
+      <div class="principle-title">Liskov's Substitution Principle</div>
+      <div class="principle-subtitle">Children must work wherever parents do</div>
+    </div>
+  </div>
+  <p class="principle-desc">
+    If two classes share the same <strong>base type</strong>, any code using that base type should work correctly with <em>either</em> child — no surprises, no crashes, no special cases.
+  </p>
+  <div class="example-label">✓ Example — Any enemy works in the same spawner</div>
+  <div class="example-block"><span class="kw">public abstract class</span> <span class="tp">Enemy</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="kw">public abstract void</span> <span class="tp">Spawn</span>(<span class="tp">Vector3</span> <span class="st">position</span>);
+}
+
+<span class="kw">public class</span> <span class="tp">Goblin</span> : <span class="tp">Enemy</span>
+{
+    <span class="kw">public override void</span> <span class="tp">Spawn</span>(<span class="tp">Vector3</span> <span class="st">position</span>)
+    {
+        <span class="st">transform</span>.position = <span class="st">position</span>;
+        <span class="cm">// Goblin setup...</span>
+    }
+}
+
+<span class="kw">public class</span> <span class="tp">Dragon</span> : <span class="tp">Enemy</span>
+{
+    <span class="kw">public override void</span> <span class="tp">Spawn</span>(<span class="tp">Vector3</span> <span class="st">position</span>)
+    {
+        <span class="st">transform</span>.position = <span class="st">position</span>;
+        <span class="cm">// Dragon setup...</span>
+    }
+}
+
+<span class="cm">// This spawner works with ANY enemy — Goblin, Dragon, or future ones</span>
+<span class="kw">public class</span> <span class="tp">EnemySpawner</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="kw">public void</span> <span class="tp">SpawnEnemy</span>(<span class="tp">Enemy</span> <span class="st">enemy</span>, <span class="tp">Vector3</span> <span class="st">pos</span>)
+    {
+        <span class="st">enemy</span>.<span class="tp">Spawn</span>(<span class="st">pos</span>);  <span class="cm">// Works the same regardless of type</span>
+    }
+}</div>
+</div>
+
+<!-- I — Interface Segregation -->
+<div class="principle p-i">
+  <div class="principle-header">
+    <div class="principle-letter">I</div>
+    <div>
+      <div class="principle-title">Interface Segregation Principle</div>
+      <div class="principle-subtitle">Keep interfaces small and focused</div>
+    </div>
+  </div>
+  <p class="principle-desc">
+    Don't force a class to implement things it doesn't need. Use <strong>small, specific interfaces</strong> — each with the least amount of members — so classes only commit to what they actually use.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="bad-label">✗ One bloated interface</div>
+      <div class="example-block"><span class="kw">public interface</span> <span class="tp">IEntity</span>
+{
+    <span class="kw">void</span> <span class="tp">TakeDamage</span>(<span class="kw">int</span> <span class="st">amount</span>);
+    <span class="kw">void</span> <span class="tp">Move</span>(<span class="tp">Vector3</span> <span class="st">dir</span>);
+    <span class="kw">void</span> <span class="tp">OpenInventory</span>();
+}
+
+<span class="cm">// A tree can take damage...</span>
+<span class="cm">// but Move? OpenInventory? Nope.</span>
+<span class="kw">public class</span> <span class="tp">Tree</span> : <span class="tp">IEntity</span> { ... }</div>
+    </div>
+    <div>
+      <div class="good-label">✓ Small, focused interfaces</div>
+      <div class="example-block"><span class="kw">public interface</span> <span class="tp">IDamageable</span>
+{
+    <span class="kw">void</span> <span class="tp">TakeDamage</span>(<span class="kw">int</span> <span class="st">amount</span>);
+}
+
+<span class="kw">public interface</span> <span class="tp">IMovable</span>
+{
+    <span class="kw">void</span> <span class="tp">Move</span>(<span class="tp">Vector3</span> <span class="st">dir</span>);
+}
+
+<span class="cm">// Tree only implements what it needs</span>
+<span class="kw">public class</span> <span class="tp">Tree</span> : <span class="tp">IDamageable</span> { ... }
+
+<span class="cm">// Player uses both</span>
+<span class="kw">public class</span> <span class="tp">Player</span> : <span class="tp">IDamageable</span>, <span class="tp">IMovable</span>
+{ ... }</div>
+    </div>
+  </div>
+</div>
+
+<!-- D — Dependency Inversion -->
+<div class="principle p-d">
+  <div class="principle-header">
+    <div class="principle-letter">D</div>
+    <div>
+      <div class="principle-title">Dependency Inversion Principle</div>
+      <div class="principle-subtitle">Depend on interfaces, not concrete classes</div>
+    </div>
+  </div>
+  <p class="principle-desc">
+    High-level code shouldn't depend on specific implementations. Use <strong>interfaces and abstract classes</strong> so you can swap behaviors (like different save systems or input methods) without rewriting the code that uses them.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="bad-label">✗ Locked to one implementation</div>
+      <div class="example-block"><span class="kw">public class</span> <span class="tp">GameManager</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="cm">// Directly depends on a specific class</span>
+    <span class="kw">private</span> <span class="tp">JsonSaveSystem</span> <span class="pr">_saveSystem</span>;
+
+    <span class="kw">void</span> <span class="tp">Save</span>()
+    {
+        <span class="pr">_saveSystem</span>.<span class="tp">SaveGame</span>();
+    }
+}</div>
+    </div>
+    <div>
+      <div class="good-label">✓ Depends on an interface</div>
+      <div class="example-block"><span class="kw">public interface</span> <span class="tp">ISaveSystem</span>
+{
+    <span class="kw">void</span> <span class="tp">SaveGame</span>();
+}
+
+<span class="kw">public class</span> <span class="tp">JsonSave</span> : <span class="tp">ISaveSystem</span> { ... }
+<span class="kw">public class</span> <span class="tp">CloudSave</span> : <span class="tp">ISaveSystem</span> { ... }
+
+<span class="kw">public class</span> <span class="tp">GameManager</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="cm">// Works with ANY save system</span>
+    <span class="kw">private</span> <span class="tp">ISaveSystem</span> <span class="pr">_saveSystem</span>;
+
+    <span class="kw">void</span> <span class="tp">Save</span>()
+    {
+        <span class="pr">_saveSystem</span>.<span class="tp">SaveGame</span>();
+    }
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIP -->
+<div class="tip-card">
+  <span class="tip-icon">✦</span>
+  <strong>You don't need all five at once.</strong> Start with Single Responsibility — split your giant EntityController into smaller scripts. Once that feels natural, try the others one at a time. SOLID is a guide, not a law. In game jams or prototypes, it's fine to bend the rules and refactor later.
+</div>
+
+<footer>
+  SOLID Principles — Quick Reference for Unity &amp; C# &middot; Vitor Fanhani Barbosa &middot; 2025
+</footer>
+
+</body>
+</html>
