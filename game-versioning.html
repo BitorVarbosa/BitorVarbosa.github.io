@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Versioning Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e12;
+    --surface: #16161d;
+    --surface-2: #1e1e28;
+    --border: #2a2a38;
+    --text: #e2e2ea;
+    --text-dim: #8888a0;
+    --accent: #68d391;
+    --accent-dim: #68d39130;
+    --major: #fc8181;
+    --minor: #63b3ed;
+    --patch: #f6ad55;
+    --build: #555570;
+    --purple: #b794f4;
+    --code-bg: #12121a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    padding: 2rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @keyframes backLinkColorCycle {
+    0%, 100% { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+    25%       { color: #8be9fd; text-shadow: 0 0 8px #8be9fdaa, 0 0 18px #8be9fd55; }
+    50%       { color: #bd93f9; text-shadow: 0 0 8px #bd93f9aa, 0 0 18px #bd93f955; }
+    75%       { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    animation: backLinkColorCycle 4s ease-in-out infinite;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  header h1 .v-major { color: var(--major); }
+  header h1 .v-minor { color: var(--minor); }
+  header h1 .v-patch { color: var(--patch); }
+  header h1 .v-build { color: var(--build); }
+  header h1 .v-dot { color: var(--text-dim); }
+
+  header p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  .version-display {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .version-display .ver {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .version-display .ver .v-major { color: var(--major); }
+  .version-display .ver .v-minor { color: var(--minor); }
+  .version-display .ver .v-patch { color: var(--patch); }
+  .version-display .ver .v-build { color: var(--build); }
+  .version-display .ver .v-dot { color: var(--text-dim); }
+
+  .version-labels {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: 0.5rem;
+  }
+
+  .version-labels span {
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .version-labels .lbl-major { color: var(--major); background: #fc818115; }
+  .version-labels .lbl-minor { color: var(--minor); background: #63b3ed15; }
+  .version-labels .lbl-patch { color: var(--patch); background: #f6ad5515; }
+  .version-labels .lbl-build { color: var(--build); background: #55557015; text-decoration: line-through; }
+
+  .legend {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .legend .greyed {
+    opacity: 0.4;
+  }
+
+  .section {
+    margin-bottom: 2.2rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .section-subtitle {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+
+  .section-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+    padding-left: 0.2rem;
+    line-height: 1.65;
+  }
+
+  .section-desc strong {
+    font-weight: 600;
+  }
+
+  .example-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text-dim);
+  }
+
+  .example-block .kw { color: var(--minor); }
+  .example-block .tp { color: var(--accent); }
+  .example-block .cm { color: #555570; font-style: italic; }
+  .example-block .st { color: var(--patch); }
+  .example-block .pr { color: var(--major); }
+  .example-block .pu { color: var(--purple); }
+  .example-block .dm { color: var(--build); }
+
+  .example-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 0.4rem;
+    padding-left: 0.2rem;
+  }
+
+  /* Per-section colors */
+  .s-major .section-letter { background: #fc818120; color: var(--major); border: 1px solid #fc818140; }
+  .s-major .section-title { color: var(--major); }
+  .s-major strong { color: var(--major); }
+
+  .s-minor .section-letter { background: #63b3ed20; color: var(--minor); border: 1px solid #63b3ed40; }
+  .s-minor .section-title { color: var(--minor); }
+  .s-minor strong { color: var(--minor); }
+
+  .s-patch .section-letter { background: #f6ad5520; color: var(--patch); border: 1px solid #f6ad5540; }
+  .s-patch .section-title { color: var(--patch); }
+  .s-patch strong { color: var(--patch); }
+
+  .s-build .section-letter { background: #55557020; color: var(--build); border: 1px solid #55557040; }
+  .s-build .section-title { color: var(--build); }
+  .s-build strong { color: var(--build); }
+  .s-build .section-desc { color: var(--text-dim); }
+
+  .bad-good {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .bad-label, .good-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.4rem;
+    padding-left: 0.2rem;
+  }
+
+  .bad-label { color: var(--major); }
+  .good-label { color: var(--accent); }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    margin-top: 2rem;
+  }
+
+  .tip-card .tip-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .tip-card strong { color: var(--accent); font-weight: 600; }
+
+  .warn-card {
+    background: var(--surface);
+    border: 1px solid #fc818140;
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    margin-top: 1rem;
+  }
+
+  .warn-card .tip-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .warn-card strong { color: var(--major); font-weight: 600; }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.8rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .timeline-row .ver-num {
+    font-weight: 700;
+    min-width: 70px;
+  }
+
+  .timeline-row .ver-desc {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+  }
+
+  .timeline-row.t-major .ver-num { color: var(--major); }
+  .timeline-row.t-minor .ver-num { color: var(--minor); }
+  .timeline-row.t-patch .ver-num { color: var(--patch); }
+
+  .deprecated-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--build);
+    border: 1px solid #55557060;
+    border-radius: 4px;
+    padding: 0.15rem 0.45rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1.2rem 1rem; }
+    header h1 { font-size: 1.5rem; }
+    .version-display .ver { font-size: 1.8rem; }
+    .bad-good { grid-template-columns: 1fr; }
+    .example-block { font-size: 0.72rem; padding: 1rem; }
+    .version-labels { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="tools.html" class="back-link">← Back to Tools</a>
+  <h1><span class="v-major">Major</span><span class="v-dot">.</span><span class="v-minor">Minor</span><span class="v-dot">.</span><span class="v-patch">Patch</span><span class="v-dot">.</span><span class="v-build">Build</span></h1>
+  <p>A practical versioning scheme for game development</p>
+</header>
+
+<div class="version-display">
+  <div class="ver"><span class="v-major">1</span><span class="v-dot">.</span><span class="v-minor">3</span><span class="v-dot">.</span><span class="v-patch">7</span><span class="v-dot">.</span><span class="v-build">42</span></div>
+  <div class="version-labels">
+    <span class="lbl-major">major</span>
+    <span class="lbl-minor">minor</span>
+    <span class="lbl-patch">patch</span>
+    <span class="lbl-build">build</span>
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--major)"></span> Major</span>
+  <span><span class="dot" style="background:var(--minor)"></span> Minor</span>
+  <span><span class="dot" style="background:var(--patch)"></span> Patch</span>
+  <span class="greyed"><span class="dot" style="background:var(--build)"></span> Build (not recommended)</span>
+</div>
+
+<!-- MAJOR -->
+<div class="section s-major">
+  <div class="section-header">
+    <div class="section-letter">Ma</div>
+    <div>
+      <div class="section-title">Major</div>
+      <div class="section-subtitle">New save file recommended</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    A <strong>major</strong> version bump signals a milestone so significant that old save files may no longer be compatible. This tells your players: "start fresh for the best experience." Think large-scale reworks — restructured progression, overhauled save data schemas, or a full content reset like moving from Early Access to 1.0.
+  </p>
+  <div class="example-label">✓ When to increment major</div>
+  <div class="example-block"><span class="cm">// Save file format changed — old saves can't load properly</span>
+<span class="pr">0</span>.12.4  →  <span class="pr">1</span>.0.0     <span class="cm">// Early Access → Full Release</span>
+
+<span class="cm">// Complete progression rework, save data restructured</span>
+<span class="pr">1</span>.8.3   →  <span class="pr">2</span>.0.0     <span class="cm">// Major expansion overhaul</span>
+
+<span class="cm">// Core systems rewritten (e.g. inventory, combat)</span>
+<span class="pr">2</span>.4.1   →  <span class="pr">3</span>.0.0     <span class="cm">// Engine migration or deep refactor</span></div>
+</div>
+
+<!-- MINOR -->
+<div class="section s-minor">
+  <div class="section-header">
+    <div class="section-letter">Mi</div>
+    <div>
+      <div class="section-title">Minor</div>
+      <div class="section-subtitle">New features, save-compatible</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    A <strong>minor</strong> bump means new content or features that don't break existing saves. Players can keep playing without starting over. New levels, new mechanics layered on top, new items, quality-of-life additions — anything additive that enriches the experience while respecting existing progress.
+  </p>
+  <div class="example-label">✓ When to increment minor</div>
+  <div class="example-block"><span class="cm">// Added a new biome with enemies and loot</span>
+1.<span class="kw">3</span>.7   →  1.<span class="kw">4</span>.0     <span class="cm">// New content drop</span>
+
+<span class="cm">// New game mode (e.g. endless mode, co-op)</span>
+1.<span class="kw">4</span>.2   →  1.<span class="kw">5</span>.0     <span class="cm">// Feature addition</span>
+
+<span class="cm">// New crafting system that works alongside existing saves</span>
+2.<span class="kw">1</span>.0   →  2.<span class="kw">2</span>.0     <span class="cm">// New system, backward-compatible</span></div>
+</div>
+
+<!-- PATCH -->
+<div class="section s-patch">
+  <div class="section-header">
+    <div class="section-letter">Pa</div>
+    <div>
+      <div class="section-title">Patch</div>
+      <div class="section-subtitle">Fixes and tweaks, no new content</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    A <strong>patch</strong> covers bug fixes, balance tweaks, performance improvements, and small adjustments that don't add meaningful content. These are the updates players barely notice — except that the game feels more polished afterward. Also use this to absorb what would otherwise be a "build" increment (see below).
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="example-label">✓ Typical patch bumps</div>
+      <div class="example-block"><span class="cm">// Fixed crash on level 3 boss</span>
+1.4.<span class="st">0</span>  →  1.4.<span class="st">1</span>
+
+<span class="cm">// Balanced weapon damage values</span>
+1.4.<span class="st">1</span>  →  1.4.<span class="st">2</span>
+
+<span class="cm">// Localization typo corrections</span>
+1.4.<span class="st">2</span>  →  1.4.<span class="st">3</span>
+
+<span class="cm">// Performance optimization</span>
+1.4.<span class="st">3</span>  →  1.4.<span class="st">4</span></div>
+    </div>
+    <div>
+      <div class="example-label">✓ Build-related changes → also patch</div>
+      <div class="example-block"><span class="cm">// Changed compression settings</span>
+1.4.<span class="st">4</span>  →  1.4.<span class="st">5</span>
+
+<span class="cm">// Switched to IL2CPP backend</span>
+1.4.<span class="st">5</span>  →  1.4.<span class="st">6</span>
+
+<span class="cm">// Updated SDK / plugin versions</span>
+1.4.<span class="st">6</span>  →  1.4.<span class="st">7</span>
+
+<span class="cm">// Build config fix for console</span>
+1.4.<span class="st">7</span>  →  1.4.<span class="st">8</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BUILD -->
+<div class="section s-build">
+  <div class="section-header">
+    <div class="section-letter">Bu</div>
+    <div>
+      <div class="section-title">Build <span class="deprecated-badge">not recommended</span></div>
+      <div class="section-subtitle">Internal iteration counter</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    In theory, a <strong>build</strong> number tracks every compilation attempt or build-settings change — useful internally but meaningless to players. In practice, adding a fourth segment creates compatibility headaches. Many platforms and APIs expect a strict <strong>a.b.c</strong> format: iOS requires it, most store APIs parse only three segments, and tools like SemVer are designed around three numbers. Folding build-level changes into patch keeps your version string universally parseable.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="bad-label">✗ Four-segment version</div>
+      <div class="example-block"><span class="dm">// Looks fine in your editor...</span>
+<span class="dm">bundleVersion = "1.4.3.12"</span>
+
+<span class="dm">// ...but iOS rejects it</span>
+<span class="dm">// ERROR: CFBundleShortVersionString</span>
+<span class="dm">//   must be "X.Y.Z" format</span>
+
+<span class="dm">// Steam API, Google Play, most CI/CD</span>
+<span class="dm">// pipelines also expect a.b.c</span></div>
+    </div>
+    <div>
+      <div class="good-label">✓ Three-segment version</div>
+      <div class="example-block"><span class="cm">// Works everywhere, no exceptions</span>
+<span class="kw">bundleVersion</span> = <span class="st">"1.4.8"</span>
+
+<span class="cm">// iOS     ✓  CFBundleShortVersionString</span>
+<span class="cm">// Android ✓  versionName</span>
+<span class="cm">// Steam   ✓  Depot versioning</span>
+<span class="cm">// Consoles ✓ Submission format</span>
+<span class="cm">// SemVer  ✓  Standard compliance</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE EXAMPLE -->
+<div class="section">
+  <div class="example-label" style="margin-bottom: 0.6rem;">✦ Example — version history of a game</div>
+  <div class="timeline">
+    <div class="timeline-row t-major"><span class="ver-num">0.1.0</span> <span class="ver-desc">— First playable prototype</span></div>
+    <div class="timeline-row t-minor"><span class="ver-num">0.2.0</span> <span class="ver-desc">— Added inventory system</span></div>
+    <div class="timeline-row t-patch"><span class="ver-num">0.2.1</span> <span class="ver-desc">— Fixed item duplication bug</span></div>
+    <div class="timeline-row t-patch"><span class="ver-num">0.2.2</span> <span class="ver-desc">— Tweaked drop rates, updated build settings</span></div>
+    <div class="timeline-row t-minor"><span class="ver-num">0.3.0</span> <span class="ver-desc">— New combat system</span></div>
+    <div class="timeline-row t-minor"><span class="ver-num">0.4.0</span> <span class="ver-desc">— Multiplayer co-op mode</span></div>
+    <div class="timeline-row t-patch"><span class="ver-num">0.4.1</span> <span class="ver-desc">— Netcode stability patch</span></div>
+    <div class="timeline-row t-major"><span class="ver-num">1.0.0</span> <span class="ver-desc">— Full release — new save recommended</span></div>
+    <div class="timeline-row t-minor"><span class="ver-num">1.1.0</span> <span class="ver-desc">— Post-launch DLC: new dungeon</span></div>
+    <div class="timeline-row t-patch"><span class="ver-num">1.1.1</span> <span class="ver-desc">— Hotfix for DLC crash, IL2CPP rebuild</span></div>
+    <div class="timeline-row t-major"><span class="ver-num">2.0.0</span> <span class="ver-desc">— Massive expansion, save schema changed</span></div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="tip-card">
+  <span class="tip-icon">✦</span>
+  <strong>Keep it simple: stick to three segments.</strong> Using <code style="color:var(--text-dim);background:var(--code-bg);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">major.minor.patch</code> gives you enough granularity to communicate intent to players while staying compatible with every platform, store, and CI/CD pipeline. If you need an internal build counter, track it separately in your build system — don't bake it into the version string.
+</div>
+
+<div class="warn-card">
+  <span class="tip-icon">⚠</span>
+  <strong>Resetting lower segments.</strong> When you bump a higher segment, reset everything below it to zero. Going from <code style="color:var(--major);background:var(--code-bg);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">1</code>.4.8 to <code style="color:var(--major);background:var(--code-bg);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">2</code>.0.0 — not 2.4.8. Same for minor: <code style="color:var(--minor);background:var(--code-bg);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">1.5</code>.0 — not 1.5.8. This keeps your version history clean and predictable.
+</div>
+
+<footer>
+  Game Versioning — Quick Reference for Game Developers &middot; Vitor Fanhani Barbosa &middot; 2025
+</footer>
+
+</body>
+</html>

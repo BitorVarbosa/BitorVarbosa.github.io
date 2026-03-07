@@ -597,6 +597,31 @@ nav {
   margin-bottom: 15px;
 }
 
+.present-text {
+  font-weight: bold;
+  display: inline-flex;
+}
+
+.present-text span {
+  background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff, #ff6b6b);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-loop 3s linear infinite, wave 1.2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes gradient-loop {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.4); }
+}
+
 /* Contact section */
 .contact-container {
   display: flex;
