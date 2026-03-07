@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conventional Commits for Game Dev</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e12;
+    --surface: #16161d;
+    --surface-2: #1e1e28;
+    --border: #2a2a38;
+    --text: #e2e2ea;
+    --text-dim: #8888a0;
+    --accent: #68d391;
+    --accent-dim: #68d39130;
+    --feat: #63b3ed;
+    --fix: #fc8181;
+    --docs: #b794f4;
+    --chore: #f6ad55;
+    --wip: #8888a0;
+    --brk: #ff79c6;
+    --squash: #68d391;
+    --build: #8be9fd;
+    --perf: #f1fa8c;
+    --refactor: #4fd1c5;
+    --test: #fbb6ce;
+    --code-bg: #12121a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    padding: 2rem 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @keyframes backLinkColorCycle {
+    0%, 100% { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+    25%       { color: #8be9fd; text-shadow: 0 0 8px #8be9fdaa, 0 0 18px #8be9fd55; }
+    50%       { color: #bd93f9; text-shadow: 0 0 8px #bd93f9aa, 0 0 18px #bd93f955; }
+    75%       { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    animation: backLinkColorCycle 4s ease-in-out infinite;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+  }
+
+  header h1 .c-feat { color: var(--feat); }
+  header h1 .c-fix  { color: var(--fix); }
+  header h1 .c-docs { color: var(--docs); }
+
+  header p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Format intro block */
+  .format-section {
+    margin-bottom: 2.2rem;
+  }
+
+  .format-section h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .format-section p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-bottom: 0.8rem;
+    line-height: 1.65;
+  }
+
+  /* Sections (reusing principle pattern) */
+  .section {
+    margin-bottom: 2.2rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.35rem 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .section-subtitle {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+
+  .section-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+    padding-left: 0.2rem;
+    line-height: 1.65;
+  }
+
+  .section-desc strong { font-weight: 600; }
+
+  /* Code / example blocks */
+  .example-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text-dim);
+  }
+
+  .example-block .kw { color: var(--feat); }
+  .example-block .tp { color: var(--accent); }
+  .example-block .cm { color: #555570; font-style: italic; }
+  .example-block .st { color: var(--chore); }
+  .example-block .pr { color: var(--fix); }
+  .example-block .pu { color: var(--docs); }
+  .example-block .brk { color: var(--brk); }
+  .example-block .sq { color: var(--squash); }
+  .example-block .wi { color: var(--wip); }
+  .example-block .bd { color: var(--build); }
+  .example-block .pf { color: var(--perf); }
+  .example-block .rf { color: var(--refactor); }
+  .example-block .ts { color: var(--test); }
+  .example-block .dim { color: #555570; }
+
+  .example-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 0.4rem;
+    padding-left: 0.2rem;
+  }
+
+  /* Per-section colors */
+  .s-feat .section-badge  { background: #63b3ed20; color: var(--feat); border: 1px solid #63b3ed40; }
+  .s-feat .section-title  { color: var(--feat); }
+  .s-feat strong           { color: var(--feat); }
+
+  .s-fix .section-badge   { background: #fc818120; color: var(--fix); border: 1px solid #fc818140; }
+  .s-fix .section-title   { color: var(--fix); }
+  .s-fix strong            { color: var(--fix); }
+
+  .s-docs .section-badge  { background: #b794f420; color: var(--docs); border: 1px solid #b794f440; }
+  .s-docs .section-title  { color: var(--docs); }
+  .s-docs strong           { color: var(--docs); }
+
+  .s-chore .section-badge { background: #f6ad5520; color: var(--chore); border: 1px solid #f6ad5540; }
+  .s-chore .section-title { color: var(--chore); }
+  .s-chore strong          { color: var(--chore); }
+
+  .s-wip .section-badge   { background: #8888a020; color: var(--wip); border: 1px solid #8888a040; }
+  .s-wip .section-title   { color: var(--wip); }
+  .s-wip strong            { color: var(--wip); }
+
+  .s-brk .section-badge   { background: #ff79c620; color: var(--brk); border: 1px solid #ff79c640; }
+  .s-brk .section-title   { color: var(--brk); }
+  .s-brk strong            { color: var(--brk); }
+
+  .s-squash .section-badge { background: #68d39120; color: var(--squash); border: 1px solid #68d39140; }
+  .s-squash .section-title { color: var(--squash); }
+  .s-squash strong          { color: var(--squash); }
+
+  .s-build .section-badge  { background: #8be9fd20; color: var(--build); border: 1px solid #8be9fd40; }
+  .s-build .section-title  { color: var(--build); }
+  .s-build strong           { color: var(--build); }
+
+  .s-perf .section-badge   { background: #f1fa8c20; color: var(--perf); border: 1px solid #f1fa8c40; }
+  .s-perf .section-title   { color: var(--perf); }
+  .s-perf strong            { color: var(--perf); }
+
+  .s-refactor .section-badge { background: #4fd1c520; color: var(--refactor); border: 1px solid #4fd1c540; }
+  .s-refactor .section-title { color: var(--refactor); }
+  .s-refactor strong          { color: var(--refactor); }
+
+  .s-test .section-badge   { background: #fbb6ce20; color: var(--test); border: 1px solid #fbb6ce40; }
+  .s-test .section-title   { color: var(--test); }
+  .s-test strong            { color: var(--test); }
+
+  /* Bad / Good labels */
+  .bad-good {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .bad-label, .good-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.4rem;
+    padding-left: 0.2rem;
+  }
+
+  .bad-label  { color: var(--fix); }
+  .good-label { color: var(--accent); }
+
+  /* Tip card */
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    margin-top: 2rem;
+  }
+
+  .tip-card .tip-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .tip-card strong { color: var(--accent); font-weight: 600; }
+
+  .tip-card .tool-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--feat);
+  }
+
+  .tip-card .tool-desc {
+    color: var(--text-dim);
+    font-size: 0.82rem;
+  }
+
+  .tool-list {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  /* Scope tag inline */
+  .scope-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0 0.1rem;
+  }
+
+  .scope-tag.blue   { background: #63b3ed20; color: var(--feat); border: 1px solid #63b3ed30; }
+  .scope-tag.orange  { background: #f6ad5520; color: var(--chore); border: 1px solid #f6ad5530; }
+  .scope-tag.purple  { background: #b794f420; color: var(--docs); border: 1px solid #b794f430; }
+  .scope-tag.green   { background: #68d39120; color: var(--squash); border: 1px solid #68d39130; }
+  .scope-tag.red     { background: #fc818120; color: var(--fix); border: 1px solid #fc818130; }
+  .scope-tag.pink    { background: #ff79c620; color: var(--brk); border: 1px solid #ff79c630; }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.2rem 0;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1.2rem 1rem; }
+    header h1 { font-size: 1.5rem; }
+    .bad-good { grid-template-columns: 1fr; }
+    .example-block { font-size: 0.72rem; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="tools.html" class="back-link">← Back to Tools</a>
+  <h1><span class="c-feat">Conventional</span> <span class="c-fix">Commits</span></h1>
+  <p>A quick guide for game dev teams — programmers and artists alike</p>
+</header>
+
+<div class="legend">
+  <span><span class="dot" style="background:var(--feat)"></span> feat</span>
+  <span><span class="dot" style="background:var(--fix)"></span> fix</span>
+  <span><span class="dot" style="background:var(--refactor)"></span> refactor</span>
+  <span><span class="dot" style="background:var(--perf)"></span> perf</span>
+  <span><span class="dot" style="background:var(--build)"></span> build</span>
+  <span><span class="dot" style="background:var(--test)"></span> test</span>
+  <span><span class="dot" style="background:var(--docs)"></span> docs</span>
+  <span><span class="dot" style="background:var(--chore)"></span> chore</span>
+  <span><span class="dot" style="background:var(--wip)"></span> wip</span>
+  <span><span class="dot" style="background:var(--brk)"></span> breaking</span>
+</div>
+
+<!-- THE FORMAT -->
+<div class="format-section">
+  <h2>The Format</h2>
+  <p>Every commit message follows this structure. The <strong style="color:var(--feat)">type</strong> says <em>what kind</em> of change it is, the <strong style="color:var(--chore)">scope</strong> is optional and says <em>where</em>, and the <strong style="color:var(--text)">description</strong> says <em>what</em> you did — in imperative mood (e.g. "add", not "added").</p>
+  <div class="example-block"><span class="kw">type</span><span class="dim">(</span><span class="st">scope</span><span class="dim">)</span><span class="dim">:</span> <span class="tp">short description in imperative mood</span>
+<span class="cm">                                                       </span>
+<span class="cm">│       │              │</span>
+<span class="cm">│       │              └─  What you did (lowercase, no period)</span>
+<span class="cm">│       └─────────────────  Where in the project (optional)</span>
+<span class="cm">└─────────────────────────  What kind of change</span></div>
+</div>
+
+<!-- FEAT -->
+<div class="section s-feat">
+  <div class="section-header">
+    <div class="section-badge">feat</div>
+    <div>
+      <div class="section-title">Features</div>
+      <div class="section-subtitle">New functionality for the player or pipeline</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>feat</strong> when you add something new — a mechanic, a UI screen, a tool, or any user-facing capability. Each commit on a feature branch is still a <strong>feat</strong> if it adds working functionality, even if it's just one piece of a bigger feature.
+  </p>
+  <div class="example-block"><span class="kw">feat</span><span class="dim">(</span><span class="st">combat</span><span class="dim">):</span> <span class="tp">add heavy attack with charged input</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">ui</span><span class="dim">):</span> <span class="tp">add health bar to player HUD</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">implement drag-and-drop between slots</span>
+<span class="kw">feat</span><span class="dim">:</span> <span class="tp">add main menu with play and quit buttons</span></div>
+</div>
+
+<!-- FIX -->
+<div class="section s-fix">
+  <div class="section-header">
+    <div class="section-badge">fix</div>
+    <div>
+      <div class="section-title">Fixes &amp; Hotfixes</div>
+      <div class="section-subtitle">Something was broken, now it works</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>fix</strong> for bug fixes — anything that corrects wrong behavior. For urgent production fixes (hotfixes), still use <strong>fix</strong> but on a <em>hotfix/</em> branch per Git Flow.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="example-label">Regular fixes</div>
+      <div class="example-block"><span class="pr">fix</span><span class="dim">(</span><span class="st">audio</span><span class="dim">):</span> <span class="tp">stop SFX playing twice on hit</span>
+<span class="pr">fix</span><span class="dim">(</span><span class="st">physics</span><span class="dim">):</span> <span class="tp">correct wall clip on dash</span>
+<span class="pr">fix</span><span class="dim">(</span><span class="st">save</span><span class="dim">):</span> <span class="tp">handle corrupted save file gracefully</span></div>
+    </div>
+    <div>
+      <div class="example-label">Hotfixes (same type, different branch)</div>
+      <div class="example-block"><span class="cm">// on branch: hotfix/crash-on-load</span>
+
+<span class="pr">fix</span><span class="dim">(</span><span class="st">loader</span><span class="dim">):</span> <span class="tp">prevent null ref on scene load</span>
+
+<span class="cm">// merged directly into main + develop</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCS -->
+<div class="section s-docs">
+  <div class="section-header">
+    <div class="section-badge">docs</div>
+    <div>
+      <div class="section-title">Documentation</div>
+      <div class="section-subtitle">README, comments, wikis, guides</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>docs</strong> when the commit only changes documentation — READMEs, code comments, wiki pages, or setup guides. No gameplay or code logic changes.
+  </p>
+  <div class="example-block"><span class="pu">docs</span><span class="dim">:</span> <span class="tp">add setup instructions for new contributors</span>
+<span class="pu">docs</span><span class="dim">(</span><span class="st">api</span><span class="dim">):</span> <span class="tp">add XML summary comments to save system</span>
+<span class="pu">docs</span><span class="dim">(</span><span class="st">art</span><span class="dim">):</span> <span class="tp">document sprite naming conventions</span></div>
+</div>
+
+<!-- CHORE -->
+<div class="section s-chore">
+  <div class="section-header">
+    <div class="section-badge">chore</div>
+    <div>
+      <div class="section-title">Chores &amp; Maintenance</div>
+      <div class="section-subtitle">Cleanup, config, dependencies — no new features</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>chore</strong> for housekeeping that doesn't affect gameplay or fix bugs — updating packages, tweaking editor settings, cleaning up .meta files, or importing raw assets. Also useful: <strong style="color:var(--text)">asset</strong> (a custom type for art/audio imports).
+  </p>
+  <div class="example-block"><span class="st">chore</span><span class="dim">:</span> <span class="tp">update Unity from 2022.3.10 to 2022.3.20</span>
+<span class="st">chore</span><span class="dim">(</span><span class="st">editor</span><span class="dim">):</span> <span class="tp">add custom inspector for enemy spawner</span>
+<span class="st">chore</span><span class="dim">:</span> <span class="tp">remove unused materials from Resources folder</span>
+<span class="dim">asset</span><span class="dim">(</span><span class="st">audio</span><span class="dim">):</span> <span class="tp">add footstep SFX for grass and stone</span></div>
+</div>
+
+<!-- BUILD -->
+<div class="section s-build">
+  <div class="section-header">
+    <div class="section-badge">build</div>
+    <div>
+      <div class="section-title">Build System</div>
+      <div class="section-subtitle">Build pipeline, external dependencies, CI/CD</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>build</strong> for changes to the build pipeline, project settings, platform targets, or external dependencies. This includes Unity's Player Settings, Addressables config, CI scripts, and package manager updates. For CI-only changes you can also use <strong style="color:var(--text)">ci</strong> as an alternative type.
+  </p>
+  <div class="example-block"><span class="bd">build</span><span class="dim">:</span> <span class="tp">switch target platform from Windows to WebGL</span>
+<span class="bd">build</span><span class="dim">(</span><span class="st">addressables</span><span class="dim">):</span> <span class="tp">add remote asset bundle profiles</span>
+<span class="bd">build</span><span class="dim">:</span> <span class="tp">upgrade URP package to 14.0.9</span>
+<span class="dim">ci</span><span class="dim">:</span> <span class="tp">add GitHub Actions workflow for nightly builds</span></div>
+</div>
+
+<!-- PERF -->
+<div class="section s-perf">
+  <div class="section-header">
+    <div class="section-badge">perf</div>
+    <div>
+      <div class="section-title">Performance</div>
+      <div class="section-subtitle">Faster, leaner, smoother — no new behavior</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>perf</strong> when the commit improves performance without changing what the game does — draw call batching, object pooling, LOD tuning, reducing allocations. The behavior stays the same, it just runs better. Think of it as a special kind of <strong style="color:var(--refactor)">refactor</strong> focused purely on speed or memory.
+  </p>
+  <div class="example-block"><span class="pf">perf</span><span class="dim">(</span><span class="st">combat</span><span class="dim">):</span> <span class="tp">pool projectiles instead of instantiating each shot</span>
+<span class="pf">perf</span><span class="dim">(</span><span class="st">rendering</span><span class="dim">):</span> <span class="tp">enable GPU instancing on foliage materials</span>
+<span class="pf">perf</span><span class="dim">(</span><span class="st">ai</span><span class="dim">):</span> <span class="tp">switch pathfinding to job system for batch queries</span></div>
+</div>
+
+<!-- REFACTOR -->
+<div class="section s-refactor">
+  <div class="section-header">
+    <div class="section-badge">refactor</div>
+    <div>
+      <div class="section-title">Refactor</div>
+      <div class="section-subtitle">Restructure code or project — same behavior, better organization</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>refactor</strong> when you reorganize or clean up without adding features or fixing bugs. This applies to <em>code</em> (extracting interfaces, renaming classes) <strong>and</strong> <em>project structure</em> (reorganizing art folders, renaming assets, consolidating prefabs). The game works exactly the same before and after.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="example-label">Code refactors</div>
+      <div class="example-block"><span class="rf">refactor</span><span class="dim">(</span><span class="st">combat</span><span class="dim">):</span> <span class="tp">extract IDamageable interface</span>
+<span class="rf">refactor</span><span class="dim">(</span><span class="st">ui</span><span class="dim">):</span> <span class="tp">replace singletons with SO events</span>
+<span class="rf">refactor</span><span class="dim">:</span> <span class="tp">rename Player to PlayerController</span></div>
+    </div>
+    <div>
+      <div class="example-label">Art &amp; folder refactors</div>
+      <div class="example-block"><span class="rf">refactor</span><span class="dim">(</span><span class="st">art</span><span class="dim">):</span> <span class="tp">reorganize sprites into per-biome folders</span>
+<span class="rf">refactor</span><span class="dim">(</span><span class="st">prefabs</span><span class="dim">):</span> <span class="tp">flatten nested enemy prefab hierarchy</span>
+<span class="rf">refactor</span><span class="dim">:</span> <span class="tp">rename all UI assets to follow naming guide</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TEST -->
+<div class="section s-test">
+  <div class="section-header">
+    <div class="section-badge">test</div>
+    <div>
+      <div class="section-title">Tests</div>
+      <div class="section-subtitle">Add, update, or fix automated tests</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    Use <strong>test</strong> when the commit only touches tests — adding new ones, fixing broken ones, or improving coverage. No production code changes. If you add a feature <em>and</em> its tests in the same commit, use <strong style="color:var(--feat)">feat</strong> instead.
+  </p>
+  <div class="example-block"><span class="ts">test</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add unit tests for stack splitting logic</span>
+<span class="ts">test</span><span class="dim">(</span><span class="st">save</span><span class="dim">):</span> <span class="tp">add integration test for corrupted save recovery</span>
+<span class="ts">test</span><span class="dim">(</span><span class="st">combat</span><span class="dim">):</span> <span class="tp">fix flaky damage calculation test</span></div>
+</div>
+
+<!-- WIP -->
+<div class="section s-wip">
+  <div class="section-header">
+    <div class="section-badge">wip</div>
+    <div>
+      <div class="section-title">Work In Progress</div>
+      <div class="section-subtitle">Custom type — use only when you really need to save incomplete work</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    The spec allows custom types. Use <strong>wip</strong> when you must commit genuinely incomplete or non-functional code — e.g. saving progress before ending the day. <em>Avoid overusing it.</em> If your commit adds something that works on its own (even if the bigger feature isn't done), prefer <strong style="color:var(--feat)">feat</strong> or another standard type instead.
+  </p>
+  <div class="bad-good">
+    <div>
+      <div class="bad-label">✗ Lazy — everything is WIP</div>
+      <div class="example-block"><span class="wi">wip</span><span class="dim">:</span> <span class="tp">inventory stuff</span>
+<span class="wi">wip</span><span class="dim">:</span> <span class="tp">more inventory stuff</span>
+<span class="wi">wip</span><span class="dim">:</span> <span class="tp">almost done</span></div>
+    </div>
+    <div>
+      <div class="good-label">✓ Specific, used only when truly incomplete</div>
+      <div class="example-block"><span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add slot prefab and grid layout</span>
+<span class="wi">wip</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">partial drag logic, drop not working yet</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">complete drag-and-drop between slots</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SCOPES -->
+<div class="format-section">
+  <h2>Scopes <span style="font-size:0.85rem; font-weight:400; color:var(--text-dim)">— optional but helpful</span></h2>
+  <p>Scopes go inside parentheses after the type. They narrow down <em>which part</em> of the project was affected. Pick short, consistent names your whole team agrees on. Here are some common ones for game projects:</p>
+  <div style="display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.5rem; margin-bottom:0.5rem;">
+    <span class="scope-tag blue">ui</span>
+    <span class="scope-tag blue">combat</span>
+    <span class="scope-tag orange">audio</span>
+    <span class="scope-tag orange">vfx</span>
+    <span class="scope-tag purple">ai</span>
+    <span class="scope-tag green">save</span>
+    <span class="scope-tag red">physics</span>
+    <span class="scope-tag pink">editor</span>
+    <span class="scope-tag blue">inventory</span>
+    <span class="scope-tag orange">animation</span>
+    <span class="scope-tag green">input</span>
+    <span class="scope-tag purple">networking</span>
+  </div>
+  <p style="font-size:0.82rem; color:var(--text-dim); margin-top:0.3rem;">If the change touches many areas, just omit the scope: <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--feat)">feat: add pause menu</span></p>
+</div>
+
+<hr class="divider">
+
+<!-- BREAKING CHANGES -->
+<div class="section s-brk">
+  <div class="section-header">
+    <div class="section-badge">!</div>
+    <div>
+      <div class="section-title">Breaking Changes</div>
+      <div class="section-subtitle">Something other people's code depends on just changed</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    If your commit changes an API, renames a public method, restructures shared ScriptableObjects, or anything that will <strong>break other people's work until they update</strong>, mark it with <strong>!</strong> after the type (or scope), and optionally add a <strong>BREAKING CHANGE:</strong> footer in the commit body explaining what changed.
+  </p>
+  <div class="example-block"><span class="kw">feat</span><span class="dim">(</span><span class="st">save</span><span class="dim">)</span><span class="brk">!</span><span class="dim">:</span> <span class="tp">switch save format from binary to JSON</span>
+
+<span class="cm">BREAKING CHANGE: Old binary save files are no longer compatible.</span>
+<span class="cm">Players must start a new game or migrate saves with the provided tool.</span></div>
+  <div style="height:0.8rem"></div>
+  <div class="example-block"><span class="pr">fix</span><span class="dim">(</span><span class="st">combat</span><span class="dim">)</span><span class="brk">!</span><span class="dim">:</span> <span class="tp">rename TakeDamage to ApplyDamage across all interfaces</span>
+
+<span class="cm">BREAKING CHANGE: All classes implementing IDamageable must rename</span>
+<span class="cm">TakeDamage() to ApplyDamage(). Search-and-replace should cover it.</span></div>
+</div>
+
+<hr class="divider">
+
+<!-- SQUASHING -->
+<div class="section s-squash">
+  <div class="section-header">
+    <div class="section-badge">⟐</div>
+    <div>
+      <div class="section-title">Squashing on Merge</div>
+      <div class="section-subtitle">Keep develop clean — squash your feature branch into one commit</div>
+    </div>
+  </div>
+  <p class="section-desc">
+    On your <strong>feature branch</strong>, commit freely with proper types. When merging into <strong style="color:var(--text)">develop</strong>, squash everything into a single <strong style="color:var(--feat)">feat</strong> commit with a descriptive body summarizing what the feature includes. The branch history stays available if anyone needs the details.
+  </p>
+  <div class="example-label">Feature branch timeline — feature/inventory-system</div>
+  <div class="example-block"><span class="cm">// Day 1</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add InventoryManager and item ScriptableObject</span>
+<span class="wi">wip</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span>  <span class="tp">rough layout for grid UI</span>
+
+<span class="cm">// Day 2</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">complete grid UI with slot prefabs</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">implement drag-and-drop between slots</span>
+<span class="pr">fix</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span>  <span class="tp">correct slot highlight staying active after drop</span>
+
+<span class="cm">// Day 3</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add item tooltip on hover</span>
+<span class="dim">asset</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add item icons and pickup SFX</span>
+<span class="ts">test</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add unit tests for stack splitting</span>
+
+<span class="cm">// Day 4</span>
+<span class="rf">refactor</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">extract IInventorySlot interface</span>
+<span class="pf">perf</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">pool tooltip objects instead of creating per hover</span>
+<span class="kw">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add stack splitting with shift-click</span></div>
+
+  <div style="height:0.8rem"></div>
+  <div class="example-label">✓ Squashed result on develop</div>
+  <div class="example-block"><span class="sq">feat</span><span class="dim">(</span><span class="st">inventory</span><span class="dim">):</span> <span class="tp">add complete inventory system</span>
+
+<span class="sq">- Grid-based UI with drag-and-drop</span>
+<span class="sq">- Item tooltips on hover</span>
+<span class="sq">- Stack splitting with shift-click</span>
+<span class="sq">- ScriptableObject-driven item data</span></div>
+</div>
+
+<!-- TIP CARD — CHANGELOG TOOLS -->
+<div class="tip-card">
+  <span class="tip-icon">✦</span>
+  <strong>Changelog Tools</strong> — these read your Conventional Commits and generate a changelog automatically:
+  <div class="tool-list">
+    <div><span class="tool-name">standard-version</span> <span class="tool-desc">— Node-based, generates CHANGELOG.md and bumps version tags.</span></div>
+    <div><span class="tool-name">release-please</span> <span class="tool-desc">— Google's GitHub Action, creates release PRs automatically.</span></div>
+    <div><span class="tool-name">semantic-release</span> <span class="tool-desc">— Fully automated versioning and publishing to npm/GitHub.</span></div>
+    <div><span class="tool-name">git-cliff</span> <span class="tool-desc">— Fast, Rust-based, highly customizable, works with any repo.</span></div>
+    <div><span class="tool-name">cocogitto</span> <span class="tool-desc">— Rust CLI that also validates commit messages before you push.</span></div>
+  </div>
+</div>
+
+<!-- FINAL TIP -->
+<div class="tip-card">
+  <span class="tip-icon">✦</span>
+  <strong>Don't overthink it.</strong> The goal is a readable history your whole team can follow — programmers <em>and</em> artists. When in doubt: pick the type that feels closest, write a clear description, and move on. Consistency beats perfection.
+</div>
+
+<footer>
+  Conventional Commits — Quick Reference for Game Dev Teams &middot; Vitor Fanhani Barbosa &middot; 2025
+</footer>
+
+</body>
+</html>
