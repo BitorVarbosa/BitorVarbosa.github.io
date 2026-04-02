@@ -526,6 +526,12 @@ nav {
   transform: translateX(5px);
 }
 
+.project-link.disabled {
+  background-color: #555;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
 /* Experience section */
 .experience-timeline {
   position: relative;
