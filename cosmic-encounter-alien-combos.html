@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Encounter — Alien Combos</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e12;
+    --surface: #16161d;
+    --surface-2: #1e1e28;
+    --border: #2a2a38;
+    --text: #e2e2ea;
+    --text-dim: #8888a0;
+    --p3: #63b3ed;
+    --p4: #68d391;
+    --p5: #f6ad55;
+    --p6: #fc8181;
+    --p7: #b794f4;
+    --p8: #4fd1c5;
+    --diff-green:  #68d391;
+    --diff-yellow: #f6ad55;
+    --diff-red:    #fc8181;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.5;
+    padding: 2rem 1.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @keyframes backLinkColorCycle {
+    0%, 100% { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+    25%      { color: #8be9fd; text-shadow: 0 0 8px #8be9fdaa, 0 0 18px #8be9fd55; }
+    50%      { color: #bd93f9; text-shadow: 0 0 8px #bd93f9aa, 0 0 18px #bd93f955; }
+    75%      { color: #ff79c6; text-shadow: 0 0 8px #ff79c6aa, 0 0 18px #ff79c655; }
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    animation: backLinkColorCycle 4s ease-in-out infinite;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  header h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.35rem;
+  }
+  header p { color: var(--text-dim); font-size: 0.9rem; }
+
+  .legend {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+  }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .legend .sep { background: transparent; border: none; padding: 0.25rem 0; color: var(--border); }
+
+  .toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.8rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .toggles-label {
+    width: 100%;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.2rem;
+  }
+  .toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--p4);
+    background: #68d39122;
+    color: var(--p4);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .toggle::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--p4);
+    box-shadow: 0 0 6px var(--p4);
+  }
+  .toggle.off {
+    border-color: #4a4a5a;
+    background: transparent;
+    color: var(--text-dim);
+    text-decoration: line-through;
+  }
+  .toggle.off::before {
+    background: #4a4a5a;
+    box-shadow: none;
+  }
+  .toggle:hover { filter: brightness(1.15); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 0.85rem 0.6rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.3px;
+  }
+
+  .card-body {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .plabel {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .alien {
+    position: relative;
+    padding: 6px 44px 6px 10px;
+    border-radius: 4px;
+    border-left: 3px solid;
+    background: var(--surface-2);
+    min-height: 52px;
+  }
+  .alien-name {
+    font-weight: 700;
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.2px;
+  }
+  .alien-desc {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    line-height: 1.35;
+    margin-top: 1px;
+  }
+  .alien.missing .alien-name { color: var(--text-dim); font-style: italic; }
+
+  .alien.missing-set {
+    background: #fc818130;
+    border-left-color: #fc8181 !important;
+    box-shadow: inset 0 0 0 1px #fc818160;
+  }
+  .alien.missing-set .alien-desc { color: #f5c6c6; }
+  .alien.missing-set .set-tag {
+    background: #fc818125;
+    border-color: #fc818170;
+    color: #fc8181;
+  }
+
+  .meta {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .set-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.54rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .diff {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--surface-2);
+  }
+  .diff-green  { background: var(--diff-green);  }
+  .diff-yellow { background: var(--diff-yellow); }
+  .diff-red    { background: var(--diff-red);    }
+
+  .p3 { border-left-color: var(--p3); } .plabel.p3 { color: var(--p3); background: #63b3ed15; }
+  .p4 { border-left-color: var(--p4); } .plabel.p4 { color: var(--p4); background: #68d39115; }
+  .p5 { border-left-color: var(--p5); } .plabel.p5 { color: var(--p5); background: #f6ad5515; }
+  .p6 { border-left-color: var(--p6); } .plabel.p6 { color: var(--p6); background: #fc818115; }
+  .p7 { border-left-color: var(--p7); } .plabel.p7 { color: var(--p7); background: #b794f415; }
+  .p8 { border-left-color: var(--p8); } .plabel.p8 { color: var(--p8); background: #4fd1c515; }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1.2rem 1rem; }
+    header h1 { font-size: 1.4rem; }
+    .grid { grid-template-columns: 1fr; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="tools.html" class="back-link">← Back to Tools</a>
+  <h1>Cosmic Encounter — Alien Combos</h1>
+  <p>Curated alien match-ups for 3–8 player games</p>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--p3)"></span>3 Players</span>
+    <span><span class="dot" style="background:var(--p4)"></span>4p</span>
+    <span><span class="dot" style="background:var(--p5)"></span>5p</span>
+    <span><span class="dot" style="background:var(--p6)"></span>6p</span>
+    <span><span class="dot" style="background:var(--p7)"></span>7p</span>
+    <span><span class="dot" style="background:var(--p8)"></span>8p</span>
+    <span class="sep">·</span>
+    <span><span class="dot" style="background:var(--diff-green)"></span>Green</span>
+    <span><span class="dot" style="background:var(--diff-yellow)"></span>Yellow</span>
+    <span><span class="dot" style="background:var(--diff-red)"></span>Red</span>
+  </div>
+</header>
+
+<div class="toggles" id="toggles">
+  <div class="toggles-label">Expansions you own — toggle off to flag missing aliens</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  Cosmic Encounter Alien Combos &middot; Vitor Fanhani Barbosa &middot; 2025
+</footer>
+
+<script>
+// name|description|difficulty|set
+const aliensRaw = `Ace|Wins with one Colony|Red|2014 (CD)
+AI|Gets smarter|Red|2016 (CE)
+Alchemist|Converts cards by type|Yellow|2014 (CD)
+Alien|Abducts other aliens|Red|2016 (CE)
+Amoeba|Unlimited ship movement|Yellow|2008 (Base)
+Anarchist|Disrupts rules|Red|2016 (CE)
+Angler|Fishes for cards|Yellow|2014 (CD)
+Animal|Throws a hearty party|Yellow|2012 (CA)
+Anti-Matter|Lower total wins|Yellow|2008 (Base)
+Arcade|Wins by dominating encounters|Yellow|2013 (CS)
+Architect|Stacks planets|Red|2016 (CE)
+Aristocrat|Picks hand and draws extra flares|Red|2014 (CD)
+Assessor|Taxes multi-ship involvements|Green|2022 (CO)
+Assistant|Makes players better|Yellow|2016 (CE)
+Aura|Makes others reveal cards|Green|2022 (CO)
+Bandit|"Takes a spin" each turn|Red|2012 (CA)
+Barbarian|Destroys opponent's hand|Green|2008 (Base)
+Bleeding Heart|Low attacks become negotiates|Green|2016 (CE)
+Boomerang|Wins by returning|Red|2022 (CO)
+Booster|Sheds cards when launching|Green|2019 (Promo)
+Bride|Marries players|Yellow|2014 (CD)
+Brute|Threatens opponents ships|Yellow|2013 (CS)
+Bubble|Attacks with reinforcements|Green|2022 (CO)
+Bully|Selects losing ships|Yellow|2010 (CI)
+Bulwark|Reduces ships lost to one|Green|2013 (CS)
+Butler|Gets cards for chores|Yellow|2012 (CA)
+Calculator|Reduces higher attack card|Yellow|2008 (Base)
+Cavalry|Plays encounter cards as ally|Green|2011 (CC)
+Changeling|Swaps powers with opponent|Green|2011 (CC)
+Chosen|Takes new encounter card|Green|2008 (Base)
+Chronos|Can replay encounter|Yellow|2010 (CI)
+Chrysalis|Becomes another alien|Red|2012 (CA)
+Citadel|Builds citadels on planets|Red|2008 (Base)
+Cloak|Makes secret changes|Red|2016 (CE)
+Clone|Keeps own encounter cards|Green|2008 (Base)
+Converter|Can substitute cards for ships|Yellow|2013 (CS)
+Coordinator|Manipulates destiny deck|Yellow|2013 (CS)
+Cosmos|Changes rules|Yellow|2022 (CO)
+Coward|Withdraws from encounters|Yellow|2016 (CE)
+Crusher|Reduces ships to one|Yellow|2016 (CE)
+Cryo|Saves cards for later|Yellow|2010 (CI)
+Crystal|May multiply attack cards|Yellow|2012 (CA)
+Cudgel|Opponent loses more ships|Green|2008 (Base)
+Cyborg|Has 3 extra faceup cards|Yellow|2012 (CA)
+Daredevil|Cuts close to gain rewards|Yellow|2014 (CD)
+Decoy|Has a back encounter card|Green|2022 (CO)
+Delegator|Assigns main players|Red|2022 (CO)
+Demon|Dominates allies' ships|Yellow|2014 (Promo)
+Dervish|Rotates cards left to right|Yellow|2013 (CS)
+Deuce|Plays 2 encounter cards|Yellow|2010 (CI)
+Dictator|Controls destiny deck|Red|2008 (Base)
+Diplomat|Can negotiate 3-way deals|Yellow|2014 (CD)
+Disease|Spreads to other planets|Red|2010 (CI)
+Doppelganger|Borrows cards to play|Red|2014 (CD)
+Dragon|Scorches planets|Yellow|2022 (CO)
+Empath|May change attack to negotiate|Green|2011 (CC)
+Emperor|Demands tribute|Yellow|2016 (CE)
+Engineer|Gains tech when losing|Yellow|2014 (CD)
+Ethic|Gets compensation for attack|Green|2010 (CI)
+Evil Twin|Avoids penalties|Red|2016 (CE)
+Explorer|Finds new planets|Yellow|2014 (CD)
+Extortionist|Gets half of all new cards|Yellow|2012 (CA)
+Extractor|Displaces ships|Yellow|2022 (CO)
+Fido|Retrieves discarded cards|Yellow|2008 (Base)
+Filch|Takes opponent's used cards|Green|2008 (Base)
+Filth|Drives away others' ships|Red|2011 (CC)
+Fire Dancer|Blocks access|Yellow|2016 (CE)
+Fodder|Plays additional low cards|Yellow|2008 (Base)
+Force|Can replace an encounter card|Yellow|2022 (CO)
+Fungus|Attaches to other ships|Yellow|2008 (Base)
+Fury|Avenges lost ships|Green|2010 (CI)
+Gambler|Bluffs about cards|Red|2008 (Base)
+Geek|Knows too much|Red|2022 (CO)
+General|Draws cards for allies|Green|2012 (CA)
+Genius|Wins with 20 cards|Red|2010 (CI)
+Ghoul|Rewarded for defeating ships|Red|2010 (CI)
+Glutton|Gets extra ships and cards|Green|2011 (CC)
+Gorgon|Petrifies others' ships|Red|2012 (CA)
+Graviton|Compresses attacks to 1 digit|Yellow|2011 (CC)
+Greenhorn|Makes convenient mistakes|Green|2014 (CD)
+Gremlin|Plays hazard cards|Yellow|2022 (CO)
+Grudge|Penalizes for refusing to ally|Red|2008 (Base)
+Grumpus|Kicks others off vacated planets|Yellow|2013 (CS)
+Guardian|Ships are worth more as ally|Green|2022 (CO)
+Guerilla|Winners lose all but 1 ship|Green|2010 (CI)
+Hacker|Chooses compensation|Green|2008 (Base)
+Hate|Opponents lose cards or ships|Yellow|2008 (Base)
+Healer|Can save others' ships from warp|Yellow|2008 (Base)
+Horde|Gains tokens that act as ships|Red|2012 (CA)
+Host|Plays and adds unused flares|Yellow|2014 (CD)
+Human|Mostly harmless|Yellow|2008 (Base)
+Hunger|Feeds on others' hands|Green|2016 (CE)
+Hurtz|Leases ships|Red|2022 (CO)
+Hypochondriac|Shares anxiety|Yellow|2016 (CE)
+Industrialist|Adds losing attack cards|Yellow|2011 (CC)
+Inferno|Collects discarded flares|Green|2022 (CO)
+Insect|Gains control of new aliens|Yellow|2022 (CO)
+Invader|Launches sneak attacks|Yellow|2011 (CC)
+Joker|Makes attack cards wild|Red|2014 (CD)
+Judge|Assigns extra win/lose terms|Red|2014 (CD)
+Kamikaze|Sacrifices ships for cards|Yellow|2008 (Base)
+Klutz|Fumbles cards and ships|Yellow|2016 (CE)
+Laser|Blinds opponents to part of hand|Green|2014 (CD)
+Lemming|Gains colonies from ships in the warp|Yellow|2022 (CO)
+Leviathan|May attack with planet|Yellow|2010 (CI)
+Lightning|Gains and takes away encounters|Yellow|2012 (CA)
+Lizard|Metamorphoses after winning|Green|2014 (CD)
+Lloyd|Protects players' assets|Yellow|2022 (CO)
+Locust|Eats planets when alone|Yellow|2010 (CI)
+Loser|Winner loses and loser wins|Green|2008 (Base)
+Love|Makes the cosmos go 'round|Yellow|2014 (CD)
+Lunatic|Allies against self|Yellow|2011 (CC)
+Machine|Can continue turn|Red|2008 (Base)
+Macron|Each ship is worth 4|Green|2008 (Base)
+Magician|Steals cards; confounds opponent|Red|2010 (CI)
+Magnet|Attracts or repels an ally|Green|2022 (CO)
+Masochist|Tries to lose own ships|Red|2008 (Base)
+Maven|Is always right|Red|2016 (CE)
+Mercenary|Always rewarded for winning|Green|2010 (CI)
+Merchant|Plays cards as extra ships|Yellow|2010 (CI)
+Mesmer|Can change own artifacts|Red|2014 (CD)
+Micron|Ships are worth 2|Green|2022 (CO)
+Mimic|Copies opponent's hand size|Yellow|2011 (CC)
+Mind|Sees other players' hands|Yellow|2008 (Base)
+Mirage|Changes numbers of ships involved|Green|2014 (CD)
+Mirror|Swaps digits on attack cards|Yellow|2008 (Base)
+Miser|Gets second hand|Green|2008 (Base)
+Mite|Demands colony or loss of cards|Yellow|2008 (Base)
+Moocher|Intrudes|Yellow|2016 (CE)
+Mouth|Gobbles up cards|Red|2013 (CS)
+Muckraker|Gets allies thrown out|Yellow|2014 (CD)
+Multitude|Grows exponentially|Green|2016 (CE)
+Mutant|Maintains 8-card hand|Green|2008 (Base)
+Nanny|Motivates|Yellow|2016 (CE)
+Negator|Negates actions|Red|2022 (CO)
+Neighbor|Adds all ships in system to attack|Green|2013 (CS)
+Nightmare|Gives bad dreams|Red|2016 (CE)
+Observer|Allies do not go to warp|Green|2008 (Base)
+Oligarch|Gets richer as others get poorer|Red|2016 (CE)
+Oracle|Foresees opponent's card|Green|2008 (Base)
+Outlaw|Steals cards from opponents|Green|2013 (CS)
+Pacifist|Wins with negotiate card|Green|2008 (Base)
+Pack Rat|Collects objects|Yellow|2016 (CE)
+Parasite|Joins alliance at will|Green|2008 (Base)
+Particle|Planets are paired|Red|2016 (CE)
+Patriot|Offers cards to secure loyalty|Yellow|2013 (CS)
+Peddler|Sells cards|Red|2016 (CE)
+Pentaform|Has five life stages|Red|2014 (CD)
+Perfectionist|Keeps only the best|Green|2016 (CE)
+Phantasm|Replaces encounter card|Green|2013 (CS)
+Phantom|Has holographic ships|Green|2022 (CO)
+Philanthropist|Gives away cards|Yellow|2008 (Base)
+Pickpocket|Lifts cards from other players|Green|2014 (CD)
+Pirate|Captures ships for booty|Yellow|2014 (CD)
+Plant|Accumulates opponents' powers|Red|2010 (CI)
+Poison|Has hazardous home system|Red|2012 (CA)
+Porcupine|Discards cards for attack power|Yellow|2013 (CS)
+Pretender|Moves to best seat|Red|2016 (CE)
+Prophet|Predicts encounter winner|Red|2011 (CC)
+Pygmy|Colonies count as half|Green|2012 (CA)
+Quartermaster|Delivers rewards|Yellow|2014 (CD)
+Reactor|Makes aliens super|Red|2014 (CD)
+Reborn|Filters hand of cards|Green|2012 (CA)
+Reincarnator|Uses powers not in game|Yellow|2008 (Base)
+Relic|Gains power from new hands|Red|2011 (CC)
+Remora|Gets cards or ships with others|Yellow|2008 (Base)
+Remote|Forces others to ally|Red|2012 (CA)
+Reserve|Can use attacks as reinforcements|Green|2008 (Base)
+Roach|Spawns additional ships|Red|2013 (CS)
+Saboteur|Booby traps planets|Red|2011 (CC)
+Sadist|Wins by killing others' ships|Red|2011 (CC)
+Sapient|Adds wisdom points|Green|2012 (CA)
+Scavenger|Searches discard pile|Yellow|2013 (CS)
+Schizoid|Changes goal of game|Red|2012 (CA)
+Seeker|Asks yes-or-no question|Yellow|2010 (CI)
+Shadow|Removes others' ships|Yellow|2008 (Base)
+Sheriff|Upholds the law|Yellow|2016 (CE)
+Silencer|Silences other players|Yellow|2022 (CO)
+Siren|Entices challengers|Yellow|2011 (CC)
+Skeptic|Doubles risk of encounter|Yellow|2012 (CA)
+Sloth|Shows up at last minute|Yellow|2013 (CS)
+Sneak|Colonizes attacker|Yellow|2013 (CS)
+Sniveler|Catches up when behind|Yellow|2010 (CI)
+Sorcerer|Can switch player cards|Green|2008 (Base)
+Spiff|Receives colony as loser|Green|2008 (Base)
+Squee|Is dangerously adorable|Red|2013 (CS)
+Sting|Switches lost ships|Yellow|2012 (CA)
+Surgeon|Gives aliens facelifts|Red|2016 (CE)
+Swindler|Steals a player's identity|Red|2013 (CS)
+Sycophant|Wins through flattery|Yellow|2013 (CS)
+Symbiote|Has twice as many ships|Green|2010 (CI)
+Tentacle|Adds digits to the total|Green|2022 (CO)
+The Claw|Steals planets|Red|2011 (CC)
+The Cult|Recruits members|Red|2016 (CE)
+The Meek|Wins by losing encounters|Green|2022 (CO)
+Throwback|Does things the old way|Red|2022 (CO)
+Tick-Tock|Limits length of game|Yellow|2008 (Base)
+Tide|Makes players draw or discard|Yellow|2013 (CS)
+Tortoise|Gets late start|Red|2016 (CE)
+Tourist|Travels on cruise liner|Yellow|2014 (CD)
+Trader|Trades hands with opponent|Green|2008 (Base)
+Trickster|Wins encounters 50% of the time|Green|2011 (CC)
+Tripler|Low cards triple; high cards 1/3|Red|2008 (Base)
+Tyrant|Claims other players' ships|Red|2013 (CS)
+Usurper|Makes allies play encounter cards|Yellow|2014 (CD)
+Vacuum|Takes other ships to warp|Green|2008 (Base)
+Vector|Receives opposite rewards|Green|2022 (CO)
+Virus|Multiplies in attack|Red|2008 (Base)
+Visionary|Dictates encounter card|Yellow|2011 (CC)
+Void|Eradicates opponents' ships|Red|2008 (Base)
+Vox|Goes up to eleven|Green|2013 (CS)
+Voyager|Can have a colony in the warp|Yellow|2014 (CD)
+Vulch|Collects discarded artefacts|Green|2008 (Base)
+Warhawk|Never negotiates|Yellow|2011 (CC)
+Warpish|Adds ships in warp to total|Red|2008 (Base)
+Warrior|Adds experience points|Green|2008 (Base)
+Whirligig|Mixes two hands|Green|2014 (CD)
+Will|Not controlled by destiny|Green|2008 (Base)
+Winner|Gains extra colonies|Yellow|2012 (CA)
+Witch|Curses players|Yellow|2022 (CO)
+Worm|Re-aims hyperspace gate|Yellow|2013 (CS)
+Wormhole|Commits ships from warp|Yellow|2013 (CS)
+Wrack|Punishes for playing cards|Green|2022 (CO)
+Xenophile|Gains strength from "tourists"|Green|2011 (CC)
+Yin-Yang|Allies with both sides|Yellow|2014 (CD)
+Zilch|Wins by helping another player win|Red|2022 (CO)
+Zombie|Never goes to warp|Green|2008 (Base)`;
+
+const combosRaw = `Animal Planet: Angler, Worm, Remora, Lizard, Porcupine, Fido, Sloth, Tortoise
+Better Disinfect: Filth, Disease, Parasite, Poison, Amoeba, Hypochondriac, Chrysalis, Human
+Big Bang Theory: Virus, Multitude, Deuce, Cavalry, Crystal, Fury, Tripler, Spiff
+Card Sharps: Alchemist, Gambler, Graviton, Joker, Mesmer, Mirror, Reserve, Tripler
+Contest of Champions: Bride, Crystal, Aristocrat, Loser, Ghoul, Fodder, Sorcerer, Mesmer
+Dungeon Encounter: Warrior, Sorcerer, Barbarian, Magician, Zombie, Ghoul, Citadel, Mimic
+End of Line: Arcade, Winner, Voyager, Virus, Laser, Invader, Hacker, A.I.
+Escape Velocity: Lightning, Wormhole, Will, Whirligig, Engineer, Spiff, Graviton, Ace
+The Force is Strong: Cudgel, Dervish, Crusher, Macron, Sting, The Claw, Tide, Vacuum
+Four-Letter Words: Fury, Hate, Host, Mind, Mite, Void, Will, Worm
+Future-Rama: Alien, Warpish, Anti-Matter, Cyborg, Wormhole, Particle, A.I., Machine
+Game Over, Man!: Tick-Tock, Masochist, Sadist, Reactor, Genius, Arcade, Ace, Schizoid
+Goody Two-Shoes: Tourist, Architect, Assistant, Healer, Love, Sheriff, Sycophant, Patriot
+The Grateful Eight: Philanthropist, Empath, Butler, Fido, Healer, Xenophile, Assistant, Sycophant
+Hodgepodge: Warhawk, A.I., Crusher, Bulwark, Demon, Ethic, Judge, Chronos
+I Hate You: Hate, Philanthropist, Changeling, Bully, Fungus, Saboteur, Extortionist, Evil Twin
+I Want More Life: Masochist, Zombie, Converter, Vacuum, Warpish, Love, Hate, Kamikaze
+In The Lab: Laser, Seeker, Virus, Alchemist, Clone, Skeptic, Observer, Reactor
+Just Rewards: Quartermaster, Ghoul, Mercenary, Coward, Yin-Yang, Daredevil, Assistant, Cloak
+KW42: Citadel, Crustal, Fury, Graviton, Horde, Relic, Remora, Remote
+Law and Order: Sheriff, Nanny, Dictator, General, Emperor, Tyrant, Usurper, Oligarch
+Live Long and Prosper: Healer, Zombie, Cryo, Aristocrat, Oligarch, Bride, Chosen, Chrysalis
+Loaded Dice: Sorcerer, Genius, Trickster, Schizoid, Vox, Laser, A.I., Phantasm
+Myths and Legends: Gorgon, Leviathan, Siren, Nightmare, Fury, Fire Danger, Doppelganger, Squee
+Negotiators: Fire Danger, Bleeding Heart, The Cult, Diplomat, Empath, Surgeon, Peddler, Pack Rat
+Nerd Herd: Calculator, Klutz, Engineer, Hacker, Quartermaster, Greenhorn, Coordinator, Genius
+PGOCosmic: Philanthropist, Sniveler, The Claw, Sapient, Maven, Bride, Whirligig, Tortoise
+Peaceniks: Pacifist, Empath, Bleeding Heart, Assistant, Neighbor, Xenophile, Squee, Love
+Poker Face: Ace, Deuce, Tripler, Joker, Gambler, Winner, Lose, Angler
+Quake Bait: Remora, Miser, Genius, Animal, General, Glutton, Mutant, Cryo
+Reda's Eight: Fodder, Lunatic, Merchant, Love, Leviathan, Xenophile, Surgeon, Cryo
+Roleplaying Gone Wrong: Sniveler, Coward, General, Alien, Bride, Anarchist, Butler, Greenhorn
+Rulebreakers: Greenhorn, Usurper, Anarchist, Sneak, Trickster, Reactor, Tortoise, Swindler
+Shipnappers: Bride, Arcade, Alien, Pack Rate, Emperor, Pirate, Tyrant, Remote
+Smorgasbord: Anti-Matter, Bleeding Heart, Bride, Empath, Fungus, Hunger, Machine, Sorcerer
+So Say We All: Vox, Mouth, Siren, Seeker, Sniveler, Diplomat, Maven, Muckraker
+Square Dance: Love, Hate, Winner, Loser, Masochist, Sadist, Human, Alien
+State Dinner: Diplomat, Emperor, Chosen, Dictator, Host, Industrialist, Philanthropist, Visionary
+Strange Bedfellows: Coward, Patriot, Gorgon, Mirror, Sheriff, Outlaw, Shadow, Lightning
+Thug Life: Extortionist, Bully, Bandit, Outlaw, Filch, Pickpocket, Guerilla, Hacker
+Weirdos: Pentaform, Yin-Yang, Grudge, Lunatic, Sadist, Kamikaze, Joker, Hypochondriac
+World Movers: Leviathan, Locust, Moocher, Voyager, The Claw, Architect, Pack Rat, Pretender`;
+
+// Normalize: lowercase, strip non-alphanumerics
+const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+// Typos / variants in the combo file → canonical CSV names
+const aliases = {
+  crustal:    'crystal',
+  firedanger: 'firedancer',
+  lose:       'loser',
+  packrate:   'packrat'
+};
+
+// Build alien lookup
+const lookup = {};
+for (const line of aliensRaw.split('\n')) {
+  const [name, desc, diff, set] = line.split('|');
+  const key = norm(name);
+  if (!lookup[key]) lookup[key] = { name, desc, diff, set };
+}
+
+function findAlien(name) {
+  const key = norm(name);
+  if (lookup[key]) return lookup[key];
+  if (aliases[key] && lookup[aliases[key]]) return lookup[aliases[key]];
+  return { name, desc: 'No description found', diff: '', set: '', missing: true };
+}
+
+// Extract the short code in parens: "2014 (CD)" → "CD"
+const setCode = s => {
+  if (!s) return '';
+  const m = s.match(/\(([^)]+)\)/);
+  return m ? m[1] : s;
+};
+
+const diffClass = d =>
+  d === 'Green'  ? 'diff-green'  :
+  d === 'Yellow' ? 'diff-yellow' :
+  d === 'Red'    ? 'diff-red'    : '';
+
+// Parse combos
+const combos = combosRaw.split('\n').map(line => {
+  const idx = line.indexOf(':');
+  const title = line.slice(0, idx).trim();
+  const aliens = line.slice(idx + 1).split(',').map(s => s.trim());
+  return { title, aliens };
+});
+
+// Render
+const grid = document.getElementById('grid');
+
+for (const { title, aliens } of combos) {
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const h = document.createElement('div');
+  h.className = 'card-title';
+  h.textContent = title;
+  card.appendChild(h);
+
+  const body = document.createElement('div');
+  body.className = 'card-body';
+
+  // 3 Players label spans the first three rows (column 1)
+  const lab3 = document.createElement('div');
+  lab3.className = 'plabel p3';
+  lab3.style.gridColumn = '1';
+  lab3.style.gridRow = '1 / span 3';
+  lab3.textContent = '3 Players';
+  body.appendChild(lab3);
+
+  aliens.forEach((alienName, i) => {
+    const row = i + 1;
+    const group = i < 3 ? 3 : i + 1; // i=3→4p, i=4→5p, …, i=7→8p
+
+    // Per-row label for 4p..8p
+    if (i >= 3) {
+      const lab = document.createElement('div');
+      lab.className = 'plabel p' + group;
+      lab.style.gridColumn = '1';
+      lab.style.gridRow = String(row);
+      lab.textContent = group + 'p';
+      body.appendChild(lab);
+    }
+
+    // Alien cell
+    const a = findAlien(alienName);
+    const cell = document.createElement('div');
+    cell.className = 'alien p' + group + (a.missing ? ' missing' : '');
+    cell.style.gridColumn = '2';
+    cell.style.gridRow = String(row);
+    if (a.set) cell.dataset.set = setCode(a.set);
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'alien-name';
+    nameEl.textContent = a.name;
+
+    const descEl = document.createElement('div');
+    descEl.className = 'alien-desc';
+    descEl.textContent = a.desc;
+
+    cell.appendChild(nameEl);
+    cell.appendChild(descEl);
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+
+    if (a.diff) {
+      const dot = document.createElement('div');
+      dot.className = 'diff ' + diffClass(a.diff);
+      dot.title = a.diff;
+      meta.appendChild(dot);
+    }
+
+    if (a.set) {
+      const tag = document.createElement('div');
+      tag.className = 'set-tag';
+      tag.textContent = setCode(a.set);
+      tag.title = a.set;
+      meta.appendChild(tag);
+    }
+
+    cell.appendChild(meta);
+    body.appendChild(cell);
+  });
+
+  card.appendChild(body);
+  grid.appendChild(card);
+}
+
+// Build expansion toggles ------------------------------------------------
+const setOrder  = ['Base', 'CI', 'CC', 'CA', 'CS', 'CD', 'CE', 'Promo', 'CO'];
+const setNames  = {
+  Base:  'Cosmic Encounter (2008)',
+  CI:    'Cosmic Incursion (2010)',
+  CC:    'Cosmic Conflict (2011)',
+  CA:    'Cosmic Alliance (2012)',
+  CS:    'Cosmic Storm (2013)',
+  CD:    'Cosmic Dominion (2014)',
+  CE:    'Cosmic Eons (2016)',
+  Promo: 'Promo Aliens',
+  CO:    'Cosmic Odyssey (2022)'
+};
+
+// Collect the set codes actually used in the rendered cells
+const usedSets = new Set(
+  Array.from(document.querySelectorAll('.alien[data-set]')).map(el => el.dataset.set)
+);
+
+const togglesEl = document.getElementById('toggles');
+const ownedSets = new Set(usedSets); // all enabled by default
+
+function refreshMissing() {
+  document.querySelectorAll('.alien[data-set]').forEach(el => {
+    const owned = ownedSets.has(el.dataset.set);
+    el.classList.toggle('missing-set', !owned);
+  });
+}
+
+setOrder.filter(code => usedSets.has(code)).forEach(code => {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'toggle';
+  btn.textContent = code;
+  btn.title = setNames[code] || code;
+  btn.addEventListener('click', () => {
+    if (ownedSets.has(code)) {
+      ownedSets.delete(code);
+      btn.classList.add('off');
+    } else {
+      ownedSets.add(code);
+      btn.classList.remove('off');
+    }
+    refreshMissing();
+  });
+  togglesEl.appendChild(btn);
+});
+</script>
+</body>
+</html>
