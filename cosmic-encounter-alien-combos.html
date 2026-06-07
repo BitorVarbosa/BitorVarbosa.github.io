@@ -213,6 +213,13 @@
     font-size: 0.82rem;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: 0.2px;
+    color: var(--text);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .alien-name:hover {
+    color: var(--p3);
+    text-decoration: underline;
   }
   .alien-desc {
     font-size: 0.7rem;
@@ -606,6 +613,30 @@ const aliases = {
   packrate:   'packrat'
 };
 
+// Third-party Cosmic Encounter wiki
+const WIKI_BASE = 'https://cosmicencounter.fandom.com/wiki/';
+
+// ── MANUAL EXCEPTIONS ──────────────────────────────────────────────
+// For the rare alien whose wiki page does NOT match the auto-formula
+// (canonical name with spaces → underscores). Key = canonical alien name.
+// The value may be EITHER:
+//   • a wiki page slug  (e.g. 'Alien_(race)'), appended to WIKI_BASE, OR
+//   • a full URL        (e.g. 'https://boardgamegeek.com/...'), used as-is.
+// Empty by default — every current alien follows the formula.
+const wikiOverrides = {
+  // 'Alien': 'Alien_(race)',
+};
+
+// Canonical alien name → wiki page URL
+function wikiUrl(name) {
+  const override = wikiOverrides[name];
+  if (override) {
+    // full URL? use verbatim; otherwise treat as a wiki slug
+    return /^https?:\/\//.test(override) ? override : WIKI_BASE + encodeURIComponent(override);
+  }
+  return WIKI_BASE + encodeURIComponent(name.replace(/ /g, '_'));
+}
+
 // Build alien lookup
 const lookup = {};
 for (const line of aliensRaw.split('\n')) {
@@ -686,9 +717,13 @@ for (const { title, aliens } of combos) {
     cell.style.gridRow = String(row);
     if (a.set) cell.dataset.set = setCode(a.set);
 
-    const nameEl = document.createElement('div');
+    const nameEl = document.createElement('a');
     nameEl.className = 'alien-name';
     nameEl.textContent = a.name;
+    nameEl.href = wikiUrl(a.name);
+    nameEl.target = '_blank';
+    nameEl.rel = 'noopener noreferrer';
+    nameEl.title = 'Open ' + a.name + ' on the Cosmic Encounter Wiki ↗';
 
     const descEl = document.createElement('div');
     descEl.className = 'alien-desc';
