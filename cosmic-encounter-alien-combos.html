@@ -61,6 +61,45 @@
   }
   .back-link:hover { text-decoration: underline; }
 
+  /* Language switcher */
+  .langbar {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .lang-btn:hover { filter: brightness(1.2); color: var(--text); }
+  .lang-btn.active {
+    border-color: var(--p3);
+    background: #63b3ed18;
+    color: var(--text);
+  }
+  .lang-btn .flag { display: inline-flex; }
+  .lang-btn svg {
+    width: 20px;
+    height: 13px;
+    display: block;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px var(--border);
+  }
+
   header h1 {
     font-size: 1.9rem;
     font-weight: 700;
@@ -79,7 +118,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.68rem;
   }
-  .legend span {
+  .legend > span {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -301,31 +340,33 @@
 </head>
 <body>
 
+<div class="langbar" id="langbar"></div>
+
 <header>
-  <a href="tools.html" class="back-link">← Back to Tools</a>
-  <h1>Cosmic Encounter — Alien Combos</h1>
-  <p>Curated alien match-ups for 3–8 player games</p>
+  <a href="tools.html" class="back-link" data-i18n="← Back to Tools">← Back to Tools</a>
+  <h1 data-i18n="Cosmic Encounter — Alien Combos">Cosmic Encounter — Alien Combos</h1>
+  <p data-i18n="Curated alien match-ups for 3–8 player games">Curated alien match-ups for 3–8 player games</p>
   <div class="legend">
-    <span><span class="dot" style="background:var(--p3)"></span>3 Players</span>
-    <span><span class="dot" style="background:var(--p4)"></span>4p</span>
-    <span><span class="dot" style="background:var(--p5)"></span>5p</span>
-    <span><span class="dot" style="background:var(--p6)"></span>6p</span>
-    <span><span class="dot" style="background:var(--p7)"></span>7p</span>
-    <span><span class="dot" style="background:var(--p8)"></span>8p</span>
+    <span><span class="dot" style="background:var(--p3)"></span><span data-i18n="3 Players">3 Players</span></span>
+    <span><span class="dot" style="background:var(--p4)"></span><span data-i18n="4p">4p</span></span>
+    <span><span class="dot" style="background:var(--p5)"></span><span data-i18n="5p">5p</span></span>
+    <span><span class="dot" style="background:var(--p6)"></span><span data-i18n="6p">6p</span></span>
+    <span><span class="dot" style="background:var(--p7)"></span><span data-i18n="7p">7p</span></span>
+    <span><span class="dot" style="background:var(--p8)"></span><span data-i18n="8p">8p</span></span>
     <span class="sep">·</span>
-    <span><span class="dot" style="background:var(--diff-green)"></span>Green</span>
-    <span><span class="dot" style="background:var(--diff-yellow)"></span>Yellow</span>
-    <span><span class="dot" style="background:var(--diff-red)"></span>Red</span>
+    <span><span class="dot" style="background:var(--diff-green)"></span><span data-i18n="Green">Green</span></span>
+    <span><span class="dot" style="background:var(--diff-yellow)"></span><span data-i18n="Yellow">Yellow</span></span>
+    <span><span class="dot" style="background:var(--diff-red)"></span><span data-i18n="Red">Red</span></span>
   </div>
 </header>
 
 <div class="toggles" id="toggles">
-  <div class="toggles-label">Expansions you own — toggle off to flag missing aliens</div>
+  <div class="toggles-label" data-i18n="Expansions you own — toggle off to flag missing aliens">Expansions you own — toggle off to flag missing aliens</div>
 </div>
 
 <div class="grid" id="grid"></div>
 
-<footer>
+<footer data-i18n="Cosmic Encounter Alien Combos · Vitor Fanhani Barbosa · 2025">
   Cosmic Encounter Alien Combos &middot; Vitor Fanhani Barbosa &middot; 2025
 </footer>
 
@@ -672,93 +713,7 @@ const combos = combosRaw.split('\n').map(line => {
   return { title, aliens };
 });
 
-// Render
-const grid = document.getElementById('grid');
-
-for (const { title, aliens } of combos) {
-  const card = document.createElement('div');
-  card.className = 'card';
-
-  const h = document.createElement('div');
-  h.className = 'card-title';
-  h.textContent = title;
-  card.appendChild(h);
-
-  const body = document.createElement('div');
-  body.className = 'card-body';
-
-  // 3 Players label spans the first three rows (column 1)
-  const lab3 = document.createElement('div');
-  lab3.className = 'plabel p3';
-  lab3.style.gridColumn = '1';
-  lab3.style.gridRow = '1 / span 3';
-  lab3.textContent = '3 Players';
-  body.appendChild(lab3);
-
-  aliens.forEach((alienName, i) => {
-    const row = i + 1;
-    const group = i < 3 ? 3 : i + 1; // i=3→4p, i=4→5p, …, i=7→8p
-
-    // Per-row label for 4p..8p
-    if (i >= 3) {
-      const lab = document.createElement('div');
-      lab.className = 'plabel p' + group;
-      lab.style.gridColumn = '1';
-      lab.style.gridRow = String(row);
-      lab.textContent = group + 'p';
-      body.appendChild(lab);
-    }
-
-    // Alien cell
-    const a = findAlien(alienName);
-    const cell = document.createElement('div');
-    cell.className = 'alien p' + group + (a.missing ? ' missing' : '');
-    cell.style.gridColumn = '2';
-    cell.style.gridRow = String(row);
-    if (a.set) cell.dataset.set = setCode(a.set);
-
-    const nameEl = document.createElement('a');
-    nameEl.className = 'alien-name';
-    nameEl.textContent = a.name;
-    nameEl.href = wikiUrl(a.name);
-    nameEl.target = '_blank';
-    nameEl.rel = 'noopener noreferrer';
-    nameEl.title = 'Open ' + a.name + ' on the Cosmic Encounter Wiki ↗';
-
-    const descEl = document.createElement('div');
-    descEl.className = 'alien-desc';
-    descEl.textContent = a.desc;
-
-    cell.appendChild(nameEl);
-    cell.appendChild(descEl);
-
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-
-    if (a.diff) {
-      const dot = document.createElement('div');
-      dot.className = 'diff ' + diffClass(a.diff);
-      dot.title = a.diff;
-      meta.appendChild(dot);
-    }
-
-    if (a.set) {
-      const tag = document.createElement('div');
-      tag.className = 'set-tag';
-      tag.textContent = setCode(a.set);
-      tag.title = a.set;
-      meta.appendChild(tag);
-    }
-
-    cell.appendChild(meta);
-    body.appendChild(cell);
-  });
-
-  card.appendChild(body);
-  grid.appendChild(card);
-}
-
-// Build expansion toggles ------------------------------------------------
+// ── Expansion sets ────────────────────────────────────────────────
 const setOrder  = ['Base', 'CI', 'CC', 'CA', 'CS', 'CD', 'CE', 'Promo', 'CO'];
 const setNames  = {
   Base:  'Cosmic Encounter (2008)',
@@ -772,39 +727,291 @@ const setNames  = {
   CO:    'Cosmic Odyssey (2022)'
 };
 
-// Collect the set codes actually used in the rendered cells
-const usedSets = new Set(
-  Array.from(document.querySelectorAll('.alien[data-set]')).map(el => el.dataset.set)
-);
+// Set codes actually used by the combos (independent of render order)
+const usedSets = new Set();
+for (const { aliens } of combos) {
+  for (const token of aliens) {
+    const a = findAlien(token);
+    if (a.set) usedSets.add(setCode(a.set));
+  }
+}
 
-const togglesEl = document.getElementById('toggles');
 const ownedSets = new Set(usedSets); // all enabled by default
+
+const grid      = document.getElementById('grid');
+const togglesEl = document.getElementById('toggles');
+const langbar   = document.getElementById('langbar');
 
 function refreshMissing() {
   document.querySelectorAll('.alien[data-set]').forEach(el => {
-    const owned = ownedSets.has(el.dataset.set);
-    el.classList.toggle('missing-set', !owned);
+    el.classList.toggle('missing-set', !ownedSets.has(el.dataset.set));
   });
 }
 
-setOrder.filter(code => usedSets.has(code)).forEach(code => {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'toggle';
-  btn.textContent = code;
-  btn.title = setNames[code] || code;
-  btn.addEventListener('click', () => {
-    if (ownedSets.has(code)) {
-      ownedSets.delete(code);
-      btn.classList.add('off');
-    } else {
-      ownedSets.add(code);
-      btn.classList.remove('off');
+// ── i18n ──────────────────────────────────────────────────────────
+// English is the key. Translations live in the sibling CSV
+// `cosmic-encounter-translations.csv` (column 1 = English source string,
+// further columns = languages). An empty / missing cell falls back to
+// English. To add a language: append a LANGUAGES entry below AND add a
+// matching column to the CSV whose header equals that entry's `csvHeader`.
+const LANGUAGES = [
+  {
+    code: 'en', label: 'English', csvHeader: 'English',
+    // Union Jack (Wikipedia construction; clip counter-changes the saltire)
+    flagSvg: `<svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <clipPath id="ukcc"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+      <rect width="60" height="30" fill="#012169"/>
+      <path d="M0,0 60,30 M60,0 0,30" stroke="#fff" stroke-width="6"/>
+      <path d="M0,0 60,30 M60,0 0,30" clip-path="url(#ukcc)" stroke="#C8102E" stroke-width="4"/>
+      <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+    </svg>`
+  },
+  {
+    code: 'de', label: 'Deutsch', csvHeader: 'Deutsch',
+    flagSvg: `<svg viewBox="0 0 5 3" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="5" height="3" fill="#000"/>
+      <rect y="1" width="5" height="1" fill="#D00"/>
+      <rect y="2" width="5" height="1" fill="#FFCE00"/>
+    </svg>`
+  }
+];
+
+const translations = {};   // { englishKey: { de: '…', … } }
+let   currentLang   = 'en';
+
+// Minimal RFC-4180 CSV parser: quoted fields, "" escapes, CR/LF, BOM.
+function parseCSV(text) {
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // strip BOM
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if (c === '"') {
+      inQuotes = true;
+    } else if (c === ',') {
+      row.push(field); field = '';
+    } else if (c === '\n') {
+      row.push(field); rows.push(row); row = []; field = '';
+    } else if (c !== '\r') {
+      field += c;
     }
-    refreshMissing();
+  }
+  if (field !== '' || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+async function loadTranslations() {
+  const res = await fetch('cosmic-encounter-translations.csv', { cache: 'no-cache' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const rows = parseCSV(await res.text());
+  if (!rows.length) return;
+  const header = rows[0].map(h => h.trim());
+  const colOf = {};
+  LANGUAGES.forEach(l => {
+    const idx = header.indexOf(l.csvHeader);
+    if (idx !== -1) colOf[l.code] = idx;
   });
-  togglesEl.appendChild(btn);
-});
+  const enCol = colOf.en != null ? colOf.en : 0;
+  for (let r = 1; r < rows.length; r++) {
+    const key = rows[r][enCol];
+    if (!key) continue;
+    LANGUAGES.forEach(l => {
+      if (l.code === 'en' || colOf[l.code] == null) return;
+      const val = rows[r][colOf[l.code]];
+      if (val) (translations[key] || (translations[key] = {}))[l.code] = val;
+    });
+  }
+}
+
+// Translate an English source string for the active language.
+function t(s) {
+  if (currentLang === 'en') return s;
+  const v = translations[s] && translations[s][currentLang];
+  return (v != null && v !== '') ? v : s;
+}
+
+// ── Language selection / persistence ──────────────────────────────
+const LANG_KEY  = 'cosmicLang';
+const knownCode = c => LANGUAGES.some(l => l.code === c) ? c : null;
+const safeGet   = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const safeSet   = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+function pickInitialLang() {
+  const q = knownCode((new URLSearchParams(location.search).get('lang') || '').toLowerCase());
+  if (q) { safeSet(LANG_KEY, q); return q; }
+  const stored = knownCode(safeGet(LANG_KEY));
+  if (stored) return stored;
+  const nav = knownCode((navigator.language || '').slice(0, 2).toLowerCase());
+  if (nav) return nav;
+  return 'en';
+}
+
+function setLanguage(code) {
+  if (!knownCode(code)) return;
+  currentLang = code;
+  safeSet(LANG_KEY, code);
+  updateLangActive();
+  render();
+}
+
+function buildSwitcher() {
+  LANGUAGES.forEach(lang => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'lang-btn';
+    btn.dataset.code = lang.code;
+    btn.title = lang.label;
+    const flag = document.createElement('span');
+    flag.className = 'flag';
+    flag.innerHTML = lang.flagSvg;
+    const label = document.createElement('span');
+    label.textContent = lang.label;
+    btn.appendChild(flag);
+    btn.appendChild(label);
+    btn.addEventListener('click', () => setLanguage(lang.code));
+    langbar.appendChild(btn);
+  });
+  updateLangActive();
+}
+
+function updateLangActive() {
+  langbar.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.code === currentLang);
+  });
+}
+
+// ── Render (re-runnable on language switch) ───────────────────────
+function renderCards() {
+  grid.innerHTML = '';
+
+  for (const { title, aliens } of combos) {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const h = document.createElement('div');
+    h.className = 'card-title';
+    h.textContent = t(title);
+    card.appendChild(h);
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    // 3 Players label spans the first three rows (column 1)
+    const lab3 = document.createElement('div');
+    lab3.className = 'plabel p3';
+    lab3.style.gridColumn = '1';
+    lab3.style.gridRow = '1 / span 3';
+    lab3.textContent = t('3 Players');
+    body.appendChild(lab3);
+
+    aliens.forEach((alienName, i) => {
+      const row = i + 1;
+      const group = i < 3 ? 3 : i + 1; // i=3→4p, i=4→5p, …, i=7→8p
+
+      // Per-row label for 4p..8p
+      if (i >= 3) {
+        const lab = document.createElement('div');
+        lab.className = 'plabel p' + group;
+        lab.style.gridColumn = '1';
+        lab.style.gridRow = String(row);
+        lab.textContent = t(group + 'p');
+        body.appendChild(lab);
+      }
+
+      // Alien cell
+      const a = findAlien(alienName);
+      const cell = document.createElement('div');
+      cell.className = 'alien p' + group + (a.missing ? ' missing' : '');
+      cell.style.gridColumn = '2';
+      cell.style.gridRow = String(row);
+      if (a.set) cell.dataset.set = setCode(a.set);
+
+      const nameEl = document.createElement('a');
+      nameEl.className = 'alien-name';
+      nameEl.textContent = t(a.name);          // display only — translated
+      nameEl.href = wikiUrl(a.name);           // canonical English name for the wiki
+      nameEl.target = '_blank';
+      nameEl.rel = 'noopener noreferrer';
+      nameEl.title = t('Open {name} on the Cosmic Encounter Wiki ↗').replace('{name}', t(a.name));
+
+      const descEl = document.createElement('div');
+      descEl.className = 'alien-desc';
+      descEl.textContent = t(a.desc);
+
+      cell.appendChild(nameEl);
+      cell.appendChild(descEl);
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+
+      if (a.diff) {
+        const dot = document.createElement('div');
+        dot.className = 'diff ' + diffClass(a.diff);
+        dot.title = t(a.diff);
+        meta.appendChild(dot);
+      }
+
+      if (a.set) {
+        const tag = document.createElement('div');
+        tag.className = 'set-tag';
+        tag.textContent = setCode(a.set);                  // code stays as-is
+        tag.title = t(setNames[setCode(a.set)] || a.set);  // localized expansion name
+        meta.appendChild(tag);
+      }
+
+      cell.appendChild(meta);
+      body.appendChild(cell);
+    });
+
+    card.appendChild(body);
+    grid.appendChild(card);
+  }
+}
+
+function renderToggles() {
+  togglesEl.querySelectorAll('.toggle').forEach(b => b.remove());
+  setOrder.filter(code => usedSets.has(code)).forEach(code => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toggle' + (ownedSets.has(code) ? '' : ' off');
+    btn.textContent = code;
+    btn.title = t(setNames[code] || code);
+    btn.addEventListener('click', () => {
+      if (ownedSets.has(code)) { ownedSets.delete(code); btn.classList.add('off'); }
+      else { ownedSets.add(code); btn.classList.remove('off'); }
+      refreshMissing();
+    });
+    togglesEl.appendChild(btn);
+  });
+}
+
+function render() {
+  // Static chrome: back-link, title, subtitle, legend, toggles label, footer
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.title = t('Cosmic Encounter — Alien Combos');
+  document.documentElement.lang = currentLang;
+
+  renderCards();
+  renderToggles();
+  refreshMissing();
+}
+
+// ── Bootstrap ─────────────────────────────────────────────────────
+currentLang = pickInitialLang();
+buildSwitcher();
+loadTranslations()
+  .catch(err => console.info(
+    '[i18n] translations CSV not loaded (' + err.message +
+    ') — showing English. Serve over http(s); file:// blocks the fetch.'))
+  .finally(render);
 </script>
 </body>
 </html>
